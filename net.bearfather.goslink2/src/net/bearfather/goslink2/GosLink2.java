@@ -52,6 +52,7 @@ public static DebugWindow dw=new DebugWindow();  //Non-Linux
 	public static Thread server1;
 	public static Thread server2;
 	public static Thread server3;
+	public static Thread wst;
     public static HashMap<Integer,Thread> SH=new HashMap<Integer,Thread>();
     public static File fnames = new File("names.txt");
     public static File dnames = new File("deny.txt");
@@ -62,6 +63,8 @@ private int tcn;
     static int look=1;
 
     public static void main(String[] args) {
+    	wst=new Thread(new WebSocket());
+    	wst.start();
     	TC1 = new TelnetService(prop.getProperty("server1"), 23);
     	server1 = new Thread (new GosLink2(1));
     	TNH.put(1, TC1);
@@ -141,11 +144,14 @@ private int tcn;
 			dw.append("Server "+tc+" :");
 			for(Entry<Integer, TelnetService> t:TNH.entrySet()){
 				if (tc!=t.getValue().mynum){
-					TNH.get(t.getKey()).write("gos  "+player+": "+tmsg[1].trim());
+//					TNH.get(t.getKey()).write("gos  "+player+": "+tmsg[1].trim());  //original replace if it fails
+					TNH.get(t.getKey()).write("gos  "+tmsg[0].trim()+": "+tmsg[1].trim());
 				}
-				
-				
 			}
+			for (WebClient value:WebSocket.channels){
+				if (value!=null){value.send(tmsg[0].trim()+": "+tmsg[1].trim());}
+			}
+			
 		}
 
 	}
@@ -200,5 +206,10 @@ private int tcn;
 	}
 	public static String prps(String name) {
 		return prop.getProperty(name);
+	}
+	public static int Pi(String line){
+		int rtn=0;
+		try{rtn=Integer.parseInt(line);} catch (NumberFormatException nfe) {return 0;}
+		return rtn;
 	}
 }
