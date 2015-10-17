@@ -63,8 +63,10 @@ public static DebugWindow dw=new DebugWindow();  //Non-Linux
     static int look=1;
 
     public static void main(String[] args) {
-    	wst=new Thread(new WebSocket());
-    	wst.start();
+    	if (prop.getProperty("webchat")!=null&&prop.getProperty("webchat").equals("true")){
+    		wst=new Thread(new WebSocket());
+    		wst.start();
+    	}
     	TC1 = new TelnetService(prop.getProperty("server1"), 23);
     	server1 = new Thread (new GosLink2(1));
     	TNH.put(1, TC1);
