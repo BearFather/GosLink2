@@ -3,6 +3,7 @@ package net.bearfather.goslink2;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Arrays;
+import java.util.Map.Entry;
 
 public class WebSocket implements Runnable{
 	private static int port=3000;
@@ -10,7 +11,7 @@ public class WebSocket implements Runnable{
 	private static String pass=GosLink2.prps("webpass");
 	static ServerSocket server;
 	public static boolean run=false;
-	public static WebClient[] channels=new WebClient[50];//TODO need to flesh out channels like removing them
+	public static WebClient[] channels=new WebClient[50];
 	public static String[] players=new String[4];
 		
 	public WebSocket(){
@@ -25,7 +26,7 @@ public class WebSocket implements Runnable{
 	}
 	
 	public static void listenSocket() {
-		try{server = new ServerSocket(port);} catch (IOException e) {System.out.println("Could not listen on port "+port);run=false;}
+		try{server = new ServerSocket(port);} catch (IOException e) {GosLink2.dw.append("Could not listen on port "+port+", WebSocket not available!");run=false;}
 		while(run==true){
 			WebClient w;
 			try{
@@ -63,8 +64,10 @@ public class WebSocket implements Runnable{
 			return 99;
 		}
 		else if (line.startsWith("/who")){
-			checkWho();
-			w.write(":!:server1:!:"+players[1]+":!:server2:!:"+players[2]+":!:server3:!:"+players[3]+":!:web:!:"+players[0]);
+			for (Entry<Integer, TelnetService> value:GosLink2.TNH.entrySet()){
+				String name=value.getValue().myname;
+				w.writeln(":!:players:!:"+name+": "+value.getValue().oPlayers);
+			}
 			return 1;
 		}
 		else if (line.trim().equals(":!:pong:!:")){

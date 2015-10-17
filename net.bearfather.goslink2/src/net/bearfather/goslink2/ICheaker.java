@@ -18,14 +18,18 @@ public class ICheaker  implements Runnable{
 		TN.write("sys list users");
 		String line=TN.readit("There are", "skjafhdkhfaldsfh");
 		String[] b=line.split("\n");
+		boolean start=false;
 		for (String value:b){
-			if (!value.trim().startsWith(">sys list")&&!value.trim().startsWith("Userid")&&!value.trim().startsWith("There are")&&!value.trim().startsWith("=-=-=-")){
-				value=value.replace("", "").trim();
-				while (value.contains("  ")){
-					value=value.replaceAll("  ", " ");
+			if (value.trim().startsWith("=-=-=-")){start=true;}
+			if (start){
+				if (!value.trim().startsWith(">sys list")&&!value.trim().startsWith("Userid")&&!value.trim().startsWith("There are")&&!value.trim().startsWith("=-=-=-")){
+					value=value.replace("", "").trim();
+					while (value.contains("  ")){
+						value=value.replaceAll("  ", " ");
+					}
+					String[] v=value.split(" ");
+					if (v.length>2&&!v[1].equals(GosLink2.prps("muser2"))){rtn=rtn+","+v[1];}
 				}
-				String[] v=value.split(" ");
-				if (v.length>2&&!v[1].equals(GosLink2.prps("muser2"))){rtn=rtn+","+v[1];}
 			}
 		}
 		if (rtn.startsWith(",")){rtn=rtn.substring(1);}

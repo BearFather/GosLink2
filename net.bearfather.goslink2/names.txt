@@ -4,8 +4,4 @@
 2Qualar
 4Kodiak
 1Igozap
-<<<<<<< HEAD
-1PapaBear
-=======
-1Dumbass
->>>>>>> refs/remotes/choose_remote_name/newest
+5test

@@ -1,9 +1,7 @@
 package net.bearfather.goslink2;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 
 import org.apache.commons.net.telnet.TelnetClient;
@@ -18,6 +16,9 @@ public class TelnetService {
 	public static int runner=1;
 	public int ghost =0;
 	public int mynum=0;
+	public String myname="";
+	public boolean whoCheck=false;
+	public String oPlayers="";
 	String hangup=GosLink2.prps("cleanup");
     String nonstop="(N)onstop, (Q)uit, or (C)ontinue?";
     String ghosts="Enter your password to end the other connection and log on.";
@@ -90,6 +91,7 @@ public class TelnetService {
         String msg;
         String broken[];
         while (runner==1) {
+        	if (whoCheck){oPlayers=ICheaker.whoCheck(this);whoCheck=false;}
             buffer.append(ch);
         	msg=buffer.toString();
         	String chk=msg.trim();
@@ -130,6 +132,7 @@ public class TelnetService {
         char ch = (char) dataIn.read();
         while (runner==1) {
             buffer.append(ch);
+            //System.out.print(ch);
             String msg=buffer.toString().trim();
             if (msg.contains(kill)){
      			return kill;
@@ -146,23 +149,23 @@ public class TelnetService {
             
         }
 
-	private String msgchk(String chk, String msg) throws InterruptedException, FileNotFoundException, UnsupportedEncodingException{
+	private String msgchk(String chk, String msg) throws InterruptedException, IOException{
         	String broken[];
     		
         	if (chk.endsWith(ghosts)){
         		ghost=1;
         	}
-        	if (chk.endsWith(nonstop)){
+        	else if (chk.endsWith(nonstop)){
         	  if (cnt == 0){
             	dataOut.print("n\b");
     			dataOut.flush();
         	  }
         	  cnt++;
         	}
-     		if (chk.endsWith("Room error")){
+        	else if (chk.endsWith("Room error")){
      			return "Room error";
      		}
-     		if (msg.endsWith("just entered the Realm.")){
+        	else if (msg.endsWith("just entered the Realm.")){
      			broken=msg.split(" ");
             	for (int i=0;i<broken.length;i++ ) {
             		if (broken[i].equals("just")){
@@ -170,13 +173,19 @@ public class TelnetService {
             		}
             	}
                 GosLink2.gb.enter(player.trim(),mynum);
+     			oPlayers=ICheaker.whoCheck(this);
+     			whoCheck=false;
      		}
-            if (chk.endsWith(hangup)){
+        	else if (chk.endsWith(hangup)){
             	GosLink2.dw.append("BBS shutdown detected!");
             	loggedin=0;
             	return "!OffLINE+02";
             }
+        	else if(chk.endsWith("just hung up!!!")||chk.endsWith("just disconnected!!!")||chk.endsWith("just left the Realm.")){
+     			oPlayers=ICheaker.whoCheck(this);
+     			whoCheck=false;
+     			return ":!:whocheck:!:";
+        	}
             return null;
         }
-	
 }

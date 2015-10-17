@@ -49,9 +49,13 @@ public class WebClient implements Runnable {
 				rtn=WebSocket.checkCmd(msg,WebSocket.channels[channel]);
 				if (rtn!=2){timer.reset();}
 				else if(rtn==3){close();}
-				if (rtn==0){
+				if (rtn==0&&!msg.equals("\r\n")&&!msg.equals("\n")){
+					String smsg="";
+					if (smsg.length()>4){msg.substring(0,4);}
+					if (smsg.equals("gos ")){
+						msg=msg.substring(4);}
 					GosLink2.dw.append("Web:"+name+" gossips: "+msg);
-					dataOut.print("I got:"+msg); // println would need substring(0,msg.length()-2) to remove the extra return.
+					//dataOut.print("I got:"+msg); // println would need substring(0,msg.length()-2) to remove the extra return.
 					sayit("W: "+name+": "+msg);
 				}
 			} catch (InterruptedException | IOException e) {e.printStackTrace();live=false;}

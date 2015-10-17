@@ -18,7 +18,7 @@ public class WebTimer implements Runnable {
 				
 				client.writeln(":!:ping:!:");
 				ping=true;
-				Thread.sleep(5000);
+				Thread.sleep(120000);
 				if (ping){
 					GosLink2.dw.append("what is ping:"+ping);
 					counter=8;

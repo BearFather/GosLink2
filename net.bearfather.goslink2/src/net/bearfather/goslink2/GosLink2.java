@@ -59,7 +59,7 @@ public static DebugWindow dw=new DebugWindow();  //Non-Linux
     public static Thread HB= new Thread (new HeartBeat());
     public static ArrayList<String> names =new ArrayList<String>();
     public static ArrayList<String> deny =new ArrayList<String>();
-private int tcn;
+    private int tcn;
     static int look=1;
 
     public static void main(String[] args) {
@@ -112,6 +112,7 @@ private int tcn;
 	public String Tclient(int num) throws SocketException, IOException, InterruptedException{
 		TelnetService TC=TNH.get(num);
 		TNH.get(num).mynum=num;
+		TNH.get(num).myname=prop.getProperty("server"+num+"name");
 		String rtn=TC.getTelnetSessionAsString(Integer.toString(num));
 		if (rtn.equals("reload")){return rtn;}
 		TC.readit(" ","Room error");
@@ -124,6 +125,7 @@ private int tcn;
 			TC.readUntil("gossips:");
 			msg=TC.readUntil("\n");
 			if (msg.equals("!OffLINE+02")){
+			}else if(msg.contains("users in the game.")){
 			}else{
 				sayit(num,msg);
 			}
@@ -139,17 +141,18 @@ private int tcn;
 		String u1=GosLink2.prps("muser1").toLowerCase();
 		String u2=GosLink2.prps("muser2").toLowerCase();
 		String u3=GosLink2.prps("muser3").toLowerCase();
+		String sname=prop.getProperty("server"+tc+"name");
 		if (TC1.ghost ==1 || TC2!=null&&TC2.ghost == 1 || TC3!=null&&TC3.ghost == 1){tmsg[1]=tmsg[1]+"\n";}
 		if (!player.equals(u1)&&!player.equals(u2)&&!player.equals(u3)){
 			dw.append("Server "+tc+" :");
 			for(Entry<Integer, TelnetService> t:TNH.entrySet()){
 				if (tc!=t.getValue().mynum){
 //					TNH.get(t.getKey()).write("gos  "+player+": "+tmsg[1].trim());  //original replace if it fails
-					TNH.get(t.getKey()).write("gos  "+tmsg[0].trim()+": "+tmsg[1].trim());
+					TNH.get(t.getKey()).write("gos  "+sname.substring(0,1)+": "+tmsg[0].trim()+": "+tmsg[1].trim());
 				}
 			}
 			for (WebClient value:WebSocket.channels){
-				if (value!=null){value.send(tmsg[0].trim()+": "+tmsg[1].trim());}
+				if (value!=null){value.send(sname+": "+tmsg[0].trim()+": "+tmsg[1].trim());}
 			}
 			
 		}
