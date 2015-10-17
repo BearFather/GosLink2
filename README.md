@@ -4,4 +4,4 @@ Setup: 1.Create an account on each board you want to link. Or if the same board 
 
 INFO: If you want to run this under a non GUI OS use noguigoslink.jar. You can also run this in a GUI OS but you wont ever see a window, and will have to kill the process to exit the program.
 
-Remember if you want, I do accept paypal donations at my bearfather@gmail.com.
+Remember if you want, I do accept paypal donations at bearfather@gmail.com.
