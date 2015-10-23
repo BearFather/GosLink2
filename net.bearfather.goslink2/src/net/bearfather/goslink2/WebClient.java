@@ -57,6 +57,10 @@ public class WebClient implements Runnable {
 					GosLink2.dw.append("Web:"+name+" gossips: "+msg);
 					//dataOut.print("I got:"+msg); // println would need substring(0,msg.length()-2) to remove the extra return.
 					sayit("W: "+name+": "+msg);
+					for (WebClient value:WebSocket.channels){
+						if (value!=null&&!value.name.equals(name)){value.send("W: "+name+": "+msg);}
+					}
+
 				}
 			} catch (InterruptedException | IOException e) {e.printStackTrace();live=false;}
 		}
@@ -118,6 +122,7 @@ public class WebClient implements Runnable {
 		for(Entry<Integer, TelnetService> t:GosLink2.TNH.entrySet()){
 			if (GosLink2.TNH.get(t.getKey()).loggedin==1){GosLink2.TNH.get(t.getKey()).write("gos  "+msg);}
 		}
+		
 	
 	}
 	public String readit(String pattern, String kill) throws InterruptedException, IOException {

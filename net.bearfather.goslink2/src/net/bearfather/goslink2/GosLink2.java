@@ -40,7 +40,7 @@ static{
 				}
 			}
 	 }
-public static DebugWindow dw=new DebugWindow();  //Non-Linux
+	public static DebugWindow dw=new DebugWindow();  //Non-Linux
 //	public static DebugConsole dw=new DebugConsole();//Linux
 //	public static outputWindow ow=new outputWindow();  //debug windows
 //	public static outputWindow ow2=new outputWindow();  //debug windows
@@ -123,6 +123,7 @@ public static DebugWindow dw=new DebugWindow();  //Non-Linux
 		TC.readit("\n","Room error");
 		TC.write("\n");
 		String msg = null;
+		TC.whoCheck=true;
 		while (TC.loggedin == 1){
 			TC.readUntil("gossips:");
 			msg=TC.readUntil("\n");
@@ -146,7 +147,7 @@ public static DebugWindow dw=new DebugWindow();  //Non-Linux
 		String sname=prop.getProperty("server"+tc+"name");
 		if (TC1.ghost ==1 || TC2!=null&&TC2.ghost == 1 || TC3!=null&&TC3.ghost == 1){tmsg[1]=tmsg[1]+"\n";}
 		if (!player.equals(u1)&&!player.equals(u2)&&!player.equals(u3)){
-			dw.append("Server "+tc+" :");
+			//dw.append("Server "+tc+" :");
 			for(Entry<Integer, TelnetService> t:TNH.entrySet()){
 				if (tc!=t.getValue().mynum){
 //					TNH.get(t.getKey()).write("gos  "+player+": "+tmsg[1].trim());  //original replace if it fails
@@ -156,12 +157,16 @@ public static DebugWindow dw=new DebugWindow();  //Non-Linux
 			for (WebClient value:WebSocket.channels){
 				if (value!=null){value.send(sname+": "+tmsg[0].trim()+": "+tmsg[1].trim());}
 			}
-			
 		}
 
 	}
 	public static void startit(int num){
 		if (!TNH.containsKey(num)){
+			SH.put(num, new Thread (new GosLink2(num)));
+			SH.get(num).start();
+			
+		}else{
+			SH.remove(num);
 			SH.put(num, new Thread (new GosLink2(num)));
 			SH.get(num).start();
 			

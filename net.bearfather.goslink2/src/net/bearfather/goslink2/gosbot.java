@@ -103,7 +103,8 @@ public class gosbot {
 			ic.run();
 		}
 		else{cmd="/"+plr+" Invalid command:"+msg;}
-		if (GosLink2.TC1.ghost ==1 || GosLink2.TC2.ghost == 1 || GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
+		if (GosLink2.TC1!=null&&GosLink2.TC1.ghost ==1 || GosLink2.TC2!=null&&GosLink2.TC2.ghost == 1 || GosLink2.TC3!=null&&GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
+		
 		TN.write(cmd);
 	}
 	

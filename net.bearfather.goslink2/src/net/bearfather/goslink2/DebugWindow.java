@@ -31,7 +31,7 @@ private boolean win;
 	 }
    }
 public void append(String msg) {
-	if (win==true){textarea.append(msg+"\n");}
+	if (win==true){textarea.append(msg.trim()+"\n");}
 	else{System.out.println(msg);}
 	
 }

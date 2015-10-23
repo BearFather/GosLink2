@@ -24,7 +24,7 @@ public class WebTimer implements Runnable {
 					counter=8;
 					run=false;
 				}
-				counter++;
+				GosLink2.dw.append("counter:"+counter++);
 				if (counter==6){
 					client.writeln(":!:info:!:You have been idle for 5 min.  In 1 min this connection will be closed.");
 				}
