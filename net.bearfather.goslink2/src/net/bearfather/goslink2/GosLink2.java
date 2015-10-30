@@ -127,10 +127,12 @@ static{
 		while (TC.loggedin == 1){
 			TC.readUntil("gossips:");
 			msg=TC.readUntil("\n");
-			if (msg.equals("!OffLINE+02")){
-			}else if(msg.contains("users in the game.")){
-			}else{
-				sayit(num,msg);
+			if (msg!=null){
+				if (msg.equals("!OffLINE+02")){
+				}else if(msg.contains("users in the game.")){
+				}else{
+					sayit(num,msg);
+				}
 			}
 		}
 		dw.append("Server "+num+" is offline.");
@@ -164,7 +166,6 @@ static{
 		if (!TNH.containsKey(num)){
 			SH.put(num, new Thread (new GosLink2(num)));
 			SH.get(num).start();
-			
 		}else{
 			SH.remove(num);
 			SH.put(num, new Thread (new GosLink2(num)));

@@ -14,15 +14,15 @@ public class HeartBeat implements Runnable {
 	public void run(){
 		if (time!=0){time=time-1;}
 		GosLink2.dw.append("HeartBeat Started.");
+		OLH.put(1,0);
+		OLH.put(2,0);
+		OLH.put(3,0);
+		CTH.put(1,0);
+		CTH.put(2,0);
+		CTH.put(3,0);
 		while (true){
 			try {
-				OLH.put(1,0);
-				OLH.put(2,0);
-				OLH.put(3,0);
-				CTH.put(1,0);
-				CTH.put(2,0);
-				CTH.put(3,0);
-				Thread.sleep(60000);
+				Thread.sleep(20000);
 				for (int v:GosLink2.TNH.keySet()){
 					checkserver(v);
 				}
@@ -31,15 +31,20 @@ public class HeartBeat implements Runnable {
 		}
 	}
 	
-	public void checkserver(int num){
+	public void checkserver(int num) throws InterruptedException{
 		TC=GosLink2.TNH.get(num);
 		ol=OLH.get(num);
 		ct=CTH.get(num);
 
 		if (TC.loggedin == 1){
 			if (ct==3){
-				TC.write("");
-				GosLink2.dw.append("PING");
+//				TC.ping=false;
+				TC.write("ping");
+/*
+				GosLink2.dw.append("PING"+TC.ping);
+				Thread.sleep(100);
+				if(!TC.ping){TC.loggedin=0;TC.runner=0;}
+*/
 				ct=0;
 			}else{ct++;}
 			if (ct >5){ct=0;}

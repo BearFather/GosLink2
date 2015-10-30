@@ -22,7 +22,9 @@ public class TelnetService {
 	String hangup=GosLink2.prps("cleanup");
     String nonstop="(N)onstop, (Q)uit, or (C)ontinue?";
     String ghosts="Enter your password to end the other connection and log on.";
+   	//public boolean ping =true;
    	int cnt;
+   	
 	public TelnetService(String server, int port) {
 		this.server = server.replace("http://", "");
 		this.port = port;
@@ -120,7 +122,11 @@ public class TelnetService {
                 }
             }
             ch = (char) dataIn.read();
-            
+/*
+            int chn=Character.getNumericValue(ch);
+            if (!ping){System.out.println("!"+chn);}
+            if (!ping && chn!=-1){ping=true;}
+*/
         }
        	return null;
             
