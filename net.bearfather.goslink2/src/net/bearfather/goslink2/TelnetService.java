@@ -79,7 +79,7 @@ public class TelnetService {
 			if (loggedin==1){
 				if (value.equals("\n")){}
 				else if(value.equals("")){}
-				else{GosLink2.dw.append(myname+"->"+value);}
+				else{if(!value.equals("ping")){GosLink2.dw.append(myname+"->"+value);}}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

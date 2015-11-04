@@ -22,7 +22,7 @@ public class HeartBeat implements Runnable {
 		CTH.put(3,0);
 		while (true){
 			try {
-				Thread.sleep(20000);
+				Thread.sleep(60000);
 				for (int v:GosLink2.TNH.keySet()){
 					checkserver(v);
 				}
@@ -38,13 +38,7 @@ public class HeartBeat implements Runnable {
 
 		if (TC.loggedin == 1){
 			if (ct==3){
-//				TC.ping=false;
 				TC.write("ping");
-/*
-				GosLink2.dw.append("PING"+TC.ping);
-				Thread.sleep(100);
-				if(!TC.ping){TC.loggedin=0;TC.runner=0;}
-*/
 				ct=0;
 			}else{ct++;}
 			if (ct >5){ct=0;}

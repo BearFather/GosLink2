@@ -70,7 +70,6 @@ public class WebClient implements Runnable {
 		boolean rtn=false;
 		while (live){
 			try {
-				GosLink2.dw.append("asking for user");
 				dataOut.println(":!:user:!:");
 				String tuser=readit();
 				if (tuser!=null&&tuser.contains(":!:user:!:")){
@@ -83,7 +82,6 @@ public class WebClient implements Runnable {
 					close();
 					return false;
 				}
-				GosLink2.dw.append("got user");
 				dataOut.println(":!:pass:!:");
 				String tpass=readit();
 				if (tpass.contains(":!:pass:!:")){
@@ -92,9 +90,7 @@ public class WebClient implements Runnable {
 						close();
 						return false;
 					}
-					GosLink2.dw.append("got pass");
 				}else{
-					GosLink2.dw.append("bad pass:"+tpass+"!");
 					close();
 					return false;
 				}
@@ -190,14 +186,13 @@ public class WebClient implements Runnable {
 	}
 	public void close(){
 		try {
-			GosLink2.dw.append("we closing!");
+			GosLink2.dw.append("WebSocket closing.");
 			live=false;
 			if (timer!=null){timer.run=false;}
 			client.close();
 		} catch (IOException e) {GosLink2.dw.append("we blew a fuse!");
 }
 		finally{
-			GosLink2.dw.append("we closed!");
 			if (channel>-1){WebSocket.channels[channel]=null;}
 		}
 		

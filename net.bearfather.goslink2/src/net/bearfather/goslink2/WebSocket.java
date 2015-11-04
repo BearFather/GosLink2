@@ -15,7 +15,7 @@ public class WebSocket implements Runnable{
 	public static String[] players=new String[4];
 		
 	public WebSocket(){
-		GosLink2.dw.append("Web started!");
+		GosLink2.dw.append("WebSocket started!");
 		Arrays.fill(channels,null);
 		
 	}
