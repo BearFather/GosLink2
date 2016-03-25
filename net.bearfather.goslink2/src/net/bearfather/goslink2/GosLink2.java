@@ -19,6 +19,12 @@ import javax.swing.JOptionPane;
 public class GosLink2 implements Runnable{
 public static Properties prop = new Properties();
 public static int time;
+public static boolean debug=false;
+public static String entrymsg="GosLink enabled.";
+public static ArrayList<String> msgs=new ArrayList<String>();
+public static int spamtimer=5;
+public static boolean ansi=false;
+public static boolean timestamp=false;
 static{
 			InputStream input = null;
 			try {
@@ -34,9 +40,31 @@ static{
 						input.close();
 						time=Integer.parseInt(prop.getProperty("time"));
 						time=time*60*1000;
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+						if(prop.getProperty("debug")!=null){if(prop.getProperty("debug").toLowerCase().equals("true")){debug=true;}}
+						if(prop.getProperty("ansi")!=null){if(prop.getProperty("ansi").toLowerCase().equals("true")){ansi=true;}}
+						if(prop.getProperty("timestamp")!=null){if(prop.getProperty("timestamp").toLowerCase().equals("true")){timestamp=true;}}
+					} catch (IOException e) {e.printStackTrace();}
+				}
+			}
+			InputStream m=null;
+			Properties fmsgs = new Properties();
+			try{
+				m=new FileInputStream("messages.cfg");
+				fmsgs.load(m);
+			}catch(IOException e){
+			}finally{
+				if (m!=null){
+					try {
+						m.close();
+						if (fmsgs.getProperty("entrymsg")!=null&&!fmsgs.getProperty("entrymsg").isEmpty()){entrymsg=fmsgs.getProperty("entrymsg");}
+						if (fmsgs.getProperty("tmsg1") != null&&!fmsgs.getProperty("tmsg1").isEmpty()){msgs.add(fmsgs.getProperty("tmsg1"));}
+						if (fmsgs.getProperty("tmsg2") != null&&!fmsgs.getProperty("tmsg2").isEmpty()){msgs.add(fmsgs.getProperty("tmsg2"));}
+						if (fmsgs.getProperty("tmsg3") != null&&!fmsgs.getProperty("tmsg3").isEmpty()){msgs.add(fmsgs.getProperty("tmsg3"));}
+						if (fmsgs.getProperty("tmsg4") != null&&!fmsgs.getProperty("tmsg4").isEmpty()){msgs.add(fmsgs.getProperty("tmsg4"));}
+						if (fmsgs.getProperty("tmsg5") != null&&!fmsgs.getProperty("tmsg5").isEmpty()){msgs.add(fmsgs.getProperty("tmsg5"));}
+						if (fmsgs.getProperty("tmsg6") != null&&!fmsgs.getProperty("tmsg6").isEmpty()){msgs.add(fmsgs.getProperty("tmsg6"));}
+						if (fmsgs.getProperty("timer") != null&&!fmsgs.getProperty("timer").isEmpty()){spamtimer=Integer.parseInt(fmsgs.getProperty("timer"));}
+					} catch (IOException e) {}
 				}
 			}
 	 }
@@ -61,26 +89,27 @@ static{
     public static ArrayList<String> deny =new ArrayList<String>();
     private int tcn;
     static int look=1;
+    public static ArrayList<String> debugmsg=new ArrayList<String>();
 
     public static void main(String[] args) {
-    	if (prop.getProperty("webchat")!=null&&prop.getProperty("webchat").equals("true")){
+    	if (props("webchat")!=null&&props("webchat").equals("true")){
     		wst=new Thread(new WebSocket());
     		wst.start();
     	}
-    	TC1 = new TelnetService(prop.getProperty("server1"), 23);
+    	TC1 = new TelnetService(props("server1"), 23);
     	server1 = new Thread (new GosLink2(1));
     	TNH.put(1, TC1);
     	server1.start();
 		SH.put(1,server1);
-    	if (!prop.getProperty("server2").equals("none")){
-        	TC2 = new TelnetService(prop.getProperty("server2"), 23);
+    	if (!props("server2").equals("none")){
+        	TC2 = new TelnetService(props("server2"), 23);
         	server2 = new Thread (new GosLink2(2));
         	TNH.put(2, TC2);
     		server2.start();
     		SH.put(2,server2);
     	}
-    	if (!prop.getProperty("server3").equals("none")){
-    		TC3 = new TelnetService(prop.getProperty("server3"), 23);
+    	if (!props("server3").equals("none")){
+    		TC3 = new TelnetService(props("server3"), 23);
     		server3 = new Thread (new GosLink2(3));
     		TNH.put(3, TC3);
     		server3.start();
@@ -114,12 +143,12 @@ static{
 	public String Tclient(int num) throws SocketException, IOException, InterruptedException{
 		TelnetService TC=TNH.get(num);
 		TNH.get(num).mynum=num;
-		TNH.get(num).myname=prop.getProperty("server"+num+"name");
+		TNH.get(num).myname=props("server"+num+"name");
 		String rtn=TC.getTelnetSessionAsString(Integer.toString(num));
 		if (rtn.equals("reload")){return rtn;}
 		TC.readit(" ","Room error");
 		dw.append("Server "+num+": ");
-		TC.write("gos Goslink is enabled.");
+		TC.write("gos "+entrymsg);
 		TC.readit("\n","Room error");
 		TC.write("\n");
 		String msg = null;
@@ -143,16 +172,14 @@ static{
 		String tmsg[]=msg.split("<4;2>0:");
 		String player = tmsg[0];
 		player=player.toLowerCase().trim();
-		String u1=GosLink2.prps("muser1").toLowerCase();
-		String u2=GosLink2.prps("muser2").toLowerCase();
-		String u3=GosLink2.prps("muser3").toLowerCase();
-		String sname=prop.getProperty("server"+tc+"name");
+		String u1=props("muser1").toLowerCase();
+		String u2=props("muser2").toLowerCase();
+		String u3=props("muser3").toLowerCase();
+		String sname=props("server"+tc+"name");
 		if (TC1.ghost ==1 || TC2!=null&&TC2.ghost == 1 || TC3!=null&&TC3.ghost == 1){tmsg[1]=tmsg[1]+"\n";}
 		if (!player.equals(u1)&&!player.equals(u2)&&!player.equals(u3)){
-			//dw.append("Server "+tc+" :");
 			for(Entry<Integer, TelnetService> t:TNH.entrySet()){
 				if (tc!=t.getValue().mynum){
-//					TNH.get(t.getKey()).write("gos  "+player+": "+tmsg[1].trim());  //original replace if it fails
 					TNH.get(t.getKey()).write("gos  "+sname.substring(0,1)+": "+tmsg[0].trim()+": "+tmsg[1].trim());
 				}
 			}
@@ -161,6 +188,11 @@ static{
 			}
 		}
 
+	}
+	public static void sayit(String msg){
+		for(Entry<Integer, TelnetService> t:GosLink2.TNH.entrySet()){
+			if (GosLink2.TNH.get(t.getKey()).loggedin==1){GosLink2.TNH.get(t.getKey()).write("gos "+msg);}
+		}
 	}
 	public static void startit(int num){
 		if (!TNH.containsKey(num)){
@@ -215,7 +247,7 @@ static{
 	public GosLink2(int set) {
 		this.tcn = set;
 	}
-	public static String prps(String name) {
+	public static String props(String name) {
 		return prop.getProperty(name);
 	}
 	public static int Pi(String line){

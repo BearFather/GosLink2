@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.Map.Entry;
 
 
 public class WebClient implements Runnable {
@@ -38,9 +37,11 @@ public class WebClient implements Runnable {
 		}
 		if (live){live=login();}
 		else{dataOut.println("no lines available");close();}
-		// we are connected and talking.
-		sayit(name+" has entered webchat.");
-		dataOut.println(":!:connected:!:");
+		if (live){
+			// we are connected and talking.
+			dataOut.println(":!:connected:!:");
+			GosLink2.sayit(name+" has entered webchat.");
+		}
 		while (live){
 			String msg="none";
 			try {
@@ -55,8 +56,7 @@ public class WebClient implements Runnable {
 					if (smsg.equals("gos ")){
 						msg=msg.substring(4);}
 					GosLink2.dw.append("Web:"+name+" gossips: "+msg);
-					//dataOut.print("I got:"+msg); // println would need substring(0,msg.length()-2) to remove the extra return.
-					sayit("W: "+name+": "+msg);
+					GosLink2.sayit("W: "+name+": "+msg);
 					for (WebClient value:WebSocket.channels){
 						if (value!=null&&!value.name.equals(name)){value.send("W: "+name+": "+msg);}
 					}
@@ -98,6 +98,7 @@ public class WebClient implements Runnable {
 				String tname=readit().trim();
 				if (tname!=null&&!tname.equals("")){
 					name=tname;
+					timer.setName(name);
 				}else{
 					dataOut.print("bad username");
 					close();
@@ -114,13 +115,7 @@ public class WebClient implements Runnable {
 		return rtn;
 	}
 
-	public void sayit(String msg){
-		for(Entry<Integer, TelnetService> t:GosLink2.TNH.entrySet()){
-			if (GosLink2.TNH.get(t.getKey()).loggedin==1){GosLink2.TNH.get(t.getKey()).write("gos  "+msg);}
-		}
-		
-	
-	}
+
 	public String readit(String pattern, String kill) throws InterruptedException, IOException {
 		char lastChar = pattern.charAt(pattern.length() - 1);
         StringBuffer buffer = new StringBuffer();

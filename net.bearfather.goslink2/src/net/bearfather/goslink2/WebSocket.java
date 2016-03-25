@@ -7,8 +7,8 @@ import java.util.Map.Entry;
 
 public class WebSocket implements Runnable{
 	private static int port=3000;
-	private static String user=GosLink2.prps("webuser");
-	private static String pass=GosLink2.prps("webpass");
+	private static String user=GosLink2.props("webuser");
+	private static String pass=GosLink2.props("webpass");
 	static ServerSocket server;
 	public static boolean run=false;
 	public static WebClient[] channels=new WebClient[50];

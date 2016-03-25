@@ -19,7 +19,7 @@ public class TelnetService {
 	public String myname="";
 	public boolean whoCheck=false;
 	public String oPlayers="";
-	String hangup=GosLink2.prps("cleanup");
+	String hangup=GosLink2.props("cleanup");
     String nonstop="(N)onstop, (Q)uit, or (C)ontinue?";
     String ghosts="Enter your password to end the other connection and log on.";
    	//public boolean ping =true;
@@ -43,33 +43,35 @@ public class TelnetService {
         String rtn="blah";
         GosLink2.dw.append("Logging into server "+tcb+".");
         if (tcb.equals("1")){
-        	rtn=loginUser(GosLink2.prps("user1"),GosLink2.prps("game1"),GosLink2.prps("pass1"));
+        	rtn=loginUser(GosLink2.props("user1"),GosLink2.props("game1"),GosLink2.props("pass1"));
         }
         else if (tcb.equals("2")){
-        	rtn=loginUser(GosLink2.prps("user2"),GosLink2.prps("game2"),GosLink2.prps("pass2"));
+        	rtn=loginUser(GosLink2.props("user2"),GosLink2.props("game2"),GosLink2.props("pass2"));
         }
         else{
-        	rtn=loginUser(GosLink2.prps("user3"),GosLink2.prps("game3"),GosLink2.prps("pass3"));
+        	rtn=loginUser(GosLink2.props("user3"),GosLink2.props("game3"),GosLink2.props("pass3"));
         }
         if (rtn.equals("reload")){return rtn;}
         loggedin=1;
         return "Logged in";
 }
 	private String loginUser(String name, String cmd,String pass) throws InterruptedException, IOException {
-		readUntil(GosLink2.prps("puser"));
+		if (GosLink2.props("nonstop")!=null){nonstop=GosLink2.props("nonstop");}
+		readUntil(GosLink2.props("puser"));
 		write(name);
-		readUntil(GosLink2.prps("ppass"));
+		readUntil(GosLink2.props("ppass"));
 		write(pass+"\r\n");
-		readUntil(GosLink2.prps("pmenu"));
+		readUntil(GosLink2.props("pmenu"));
 		if (ghost == 1){
 			write("=x\n");
 			ghost=0;
 			return "reload";
 		}
 		else {write(cmd);}
-		readUntil(GosLink2.prps("pmud"));
+		readUntil(GosLink2.props("pmud"));
 		write("e");
 		write("\n");
+		if(GosLink2.ansi){write("=a");}
 		return "blah";
 }
 	public void write(String value) {
@@ -96,10 +98,12 @@ public class TelnetService {
         	if (whoCheck){oPlayers=ICheaker.whoCheck(this);whoCheck=false;}
             buffer.append(ch);
         	msg=buffer.toString();
+
         	String chk=msg.trim();
         	String rtn=msgchk(chk,msg);
         	if (rtn != null){return rtn;}
         	if (ch == lastChar) {
+            	if (GosLink2.dw.dbm){GosLink2.dw.append(msg.trim());}
          		if (buffer.toString().endsWith(pattern)) {
                 	broken=msg.split(" ");
                 	for (int i=0;i<broken.length;i++ ) {
@@ -122,7 +126,8 @@ public class TelnetService {
                 }
             }
             ch = (char) dataIn.read();
-/*
+
+            /*
             int chn=Character.getNumericValue(ch);
             if (!ping){System.out.println("!"+chn);}
             if (!ping && chn!=-1){ping=true;}

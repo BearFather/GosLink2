@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
 public class gosbot {
 	private TelnetService TN;
 	
@@ -18,94 +19,92 @@ public class gosbot {
 		msg = tmsg[1];
 		String broken[]=msg.trim().split(" ");
 		String chk=broken[0].trim().toLowerCase();
-		boolean denyall=Boolean.parseBoolean(GosLink2.prop.getProperty("deny"));
-		if (chk.equals("@abils")){
-			TN.write("sys god "+plr+" abil");
-			TN.readit("\n","Room error");
-			rtn=TN.readit("\n","Room error");
-			cmd="/"+plr+" "+rtn;
-		}
-		else if (chk.equals("@help")){
-			TN.write("/"+plr+" Hello "+plr+" Commands are:");
-			cmd="/"+plr+" @abils,@good,@neutral,@evil,@retrain, and @home room# map#";
-		}
-		else if (chk.equals("@neutral")){
-			if (!denyall&&!GosLink2.deny.contains(plr)){
-				TN.write("sys god "+plr+" neutral");
+		boolean denyall=Boolean.parseBoolean(GosLink2.props("deny"));
+		if (chk.startsWith("@")){
+			if (chk.equals("@abils")){
+				TN.write("sys god "+plr+" abil");
 				TN.readit("\n","Room error");
 				rtn=TN.readit("\n","Room error");
-			}else{rtn="You are denied!";}
-			cmd="/"+plr+" "+rtn;
-		}
-		else if (chk.equals("@good")){
-			if (!denyall&&!GosLink2.deny.contains(plr)){
-				TN.write("sys god "+plr+" good");
+				cmd="/"+plr+" "+rtn;
+			}
+			else if (chk.equals("@help")){
+				TN.write("/"+plr+" Hello "+plr+" Commands are:");
+				cmd="/"+plr+" @abils,@good,@neutral,@evil,@retrain, and @home room# map#";
+			}
+			else if (chk.equals("@neutral")){
+				if (!denyall&&!GosLink2.deny.contains(plr)){
+					TN.write("sys god "+plr+" neutral");
+					TN.readit("\n","Room error");
+					rtn=TN.readit("\n","Room error");
+				}else{rtn="You are denied!";}
+				cmd="/"+plr+" "+rtn;
+			}
+			else if (chk.equals("@good")){
+				if (!denyall&&!GosLink2.deny.contains(plr)){
+					TN.write("sys god "+plr+" good");
+					TN.readit("\n","Room error");
+					rtn=TN.readit("\n","Room error");
+				}else{rtn="You are denied!";}
+				cmd="/"+plr+" "+rtn;
+			}
+			else if (chk.equals("@evil")){
+				if (!denyall&&!GosLink2.deny.contains(plr)){
+					TN.write("sys god "+plr+" neutral");
+					TN.write("sys god "+plr+" add evil 150");
+					TN.readit("\n","Room error");
+					TN.readit("\n","Room error");
+					rtn=TN.readit("\n","Room error");
+				}else{rtn="You are denied!";}
+				cmd="/"+plr+" "+rtn;
+			}
+			else if (chk.equals("@retrain")){
+				cmd="sys god "+plr+" retrain";
+				GosLink2.dw.append(cmd);
+				TN.write(cmd);
 				TN.readit("\n","Room error");
 				rtn=TN.readit("\n","Room error");
-			}else{rtn="You are denied!";}
-			cmd="/"+plr+" "+rtn;
-		}
-		else if (chk.equals("@evil")){
-			if (!denyall&&!GosLink2.deny.contains(plr)){
-				TN.write("sys god "+plr+" neutral");
-				TN.write("sys god "+plr+" add evil 150");
-				TN.readit("\n","Room error");
-				TN.readit("\n","Room error");
-				rtn=TN.readit("\n","Room error");
-			}else{rtn="You are denied!";}
-			cmd="/"+plr+" "+rtn;
-		}
-		else if (chk.equals("@retrain")){
-			cmd="sys god "+plr+" retrain";
-			GosLink2.dw.append(cmd);
+				cmd="/"+plr+" "+rtn;
+			}
+			else if(chk.equals("@home")){
+				String line= "blank";
+				String line2 = "blank";
+				int alive=0;
+				if (broken.length < 3) {cmd="/"+plr+" not enough info";}
+				else{
+					TN.write("sys st room "+broken[1]+" "+broken[2]);
+					rtn=TN.readit("Monsters:","Room error");
+					if (rtn.equals("Room error")){cmd="/"+plr+" Room error!";}
+					else{
+						String broken2[]=rtn.split("\n");
+						for (int i=0;i<broken2.length;i++){
+							String mmsg=broken2[i];
+							if (mmsg.contains("Specific Monster:")){line=mmsg;}
+							else if (mmsg.contains("Specific Monster is Alive")){
+								line2=mmsg;
+								alive=1;
+							}
+						}
+						if (alive==1){cmd="/"+plr+" "+line2;}
+						else if (!line.equals("blank")){cmd="/"+plr+" "+line;}
+						else{cmd="/"+plr+" You have an invalid room.";}
+					}
+				}
+			}
+			else if(chk.startsWith("@score")){
+				int max=10;
+				if (broken.length>1){
+					max=Integer.parseInt(broken[1])-1;
+				}
+				ICheaker.max=max;
+				ICheaker.TN=TN;
+				ICheaker ic=new ICheaker();
+				ic.run();
+			}
+			else{cmd="/"+plr+" Invalid command:"+msg;}
+			if (GosLink2.TC1!=null&&GosLink2.TC1.ghost ==1 || GosLink2.TC2!=null&&GosLink2.TC2.ghost == 1 || GosLink2.TC3!=null&&GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
 			TN.write(cmd);
-			TN.readit("\n","Room error");
-			rtn=TN.readit("\n","Room error");
-			cmd="/"+plr+" "+rtn;
-		}
-		else if(chk.equals("@home")){
-			String line= "blank";
-			String line2 = "blank";
-			int alive=0;
-			if (broken.length < 3) {
-				cmd="/"+plr+" not enough info";
-			}else{
-				TN.write("sys st room "+broken[1]+" "+broken[2]);
-				rtn=TN.readit("Monsters:","Room error");
-				if (rtn.equals("Room error")){
-					TN.write("/"+plr+" Room error!");
-					return;
-				}
-				String broken2[]=rtn.split("\n");
-				for (int i=0;i<broken2.length;i++){
-					String mmsg=broken2[i];
-					if (mmsg.contains("Specific Monster:")){
-						line=mmsg;
-					}
-					else if (mmsg.contains("Specific Monster is Alive")){
-						line2=mmsg;
-						alive=1;
-					}
-				}
-				if (alive==1){cmd="/"+plr+" "+line2;}
-				else if (!line.equals("blank")){cmd="/"+plr+" "+line;}
-				else{cmd="/"+plr+" You have an invalid room.";}
 			}
-		}
-		else if(chk.startsWith("@score")){
-			int max=10;
-			if (broken.length>1){
-				max=Integer.parseInt(broken[1])-1;
-			}
-			ICheaker.max=max;
-			ICheaker.TN=TN;
-			ICheaker ic=new ICheaker();
-			ic.run();
-		}
-		else{cmd="/"+plr+" Invalid command:"+msg;}
-		if (GosLink2.TC1!=null&&GosLink2.TC1.ghost ==1 || GosLink2.TC2!=null&&GosLink2.TC2.ghost == 1 || GosLink2.TC3!=null&&GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
-		
-		TN.write(cmd);
+		//else{} //this would be a telepath without a @
 	}
 	
 	public void enter(String plr,int num) throws InterruptedException, FileNotFoundException, UnsupportedEncodingException{
@@ -144,7 +143,7 @@ public class gosbot {
 		}
 		if (write==1){GosLink2.filewrt();}
 		TN=GosLink2.TNH.get(num);
-		gname=GosLink2.prps("muser"+num);
+		gname=GosLink2.props("muser"+num);
 		String blah=num+",/"+plr+" Hello "+plr+".  My name is "+gname+".  I am a GosLink Bot.  Please Telepath me @help for commands.";
 		if (found==1){enters.add(blah);}
 	}

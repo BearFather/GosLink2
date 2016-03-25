@@ -1,13 +1,17 @@
 package net.bearfather.goslink2;
 
+import java.util.Map.Entry;
+
 public class WebTimer implements Runnable {
 	private int counter=0;
 	private WebClient client;
 	public boolean run=false;
 	public boolean ping=false;
+	private String name;
 	public WebTimer(WebClient w){
 		client=w;
 		run=true;
+		name=w.getName();
 	}
 	
 	@Override
@@ -38,7 +42,11 @@ public class WebTimer implements Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			run=false;
-		}finally{GosLink2.dw.append("Channel "+client.channel+" has been closed from timeout.");client.close();}
+		}finally{
+			GosLink2.dw.append("Channel "+client.channel+" has been closed from timeout.");
+			sayit(name+" has left webchat.");
+			client.close();
+			}
 	}
 	public void reset(){
 		counter=0;
@@ -50,5 +58,17 @@ public class WebTimer implements Runnable {
 		this.counter = counter;
 	}
 
+	public String getName() {
+		return name;
+	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void sayit(String msg){
+		for(Entry<Integer, TelnetService> t:GosLink2.TNH.entrySet()){
+			if (GosLink2.TNH.get(t.getKey()).loggedin==1){GosLink2.TNH.get(t.getKey()).write("gos  "+msg);}
+		}
+	}
 }

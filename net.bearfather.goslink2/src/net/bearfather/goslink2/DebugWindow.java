@@ -1,38 +1,96 @@
 package net.bearfather.goslink2;
 
 
-import java.awt.FlowLayout;
-import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+
+import java.awt.Toolkit;
  
-public class DebugWindow extends JFrame {
-private static final long serialVersionUID = 1L;
-TextArea textarea = new TextArea();
-private boolean win;
- public DebugWindow(){
-	 win=Boolean.valueOf(GosLink2.prps("window"));
-	 if (win==true){
-		 String imagePath = "smokin.png";
-		 InputStream imgStream = DebugWindow.class.getResourceAsStream(imagePath);
-		 try{BufferedImage myImg = ImageIO.read(imgStream);
-		 setIconImage(myImg);
-		 }catch (Exception e){e.printStackTrace();}
-		 setTitle("Gossip Link");
-		 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		 setLayout(new FlowLayout());
-		 add(textarea);
-		 textarea.setEditable(false);
-		 pack();
-		 setVisible(true);
-	 }
-   }
-public void append(String msg) {
-	if (win==true){textarea.append(msg.trim()+"\n");}
-	else{System.out.println(msg);}
+public class DebugWindow extends JFrame implements ActionListener{
+	private static final long serialVersionUID = 1L;
+	JTextArea textarea = new JTextArea();
+	JFrame frame=new JFrame();
+ 	JButton bdebug = new JButton("debug");
+	private boolean win;
+	public boolean dbm=false;
+	private final JScrollPane scrollPane = new JScrollPane();
 	
-}
+	 public DebugWindow(){
+		 setupPanel();
+	 	
+		 win=Boolean.valueOf(GosLink2.props("window"));
+		 if (win==true){
+		 }
+	   }
+	public void append(String msg) {
+		if (GosLink2.timestamp){
+			Date date=new Date();
+			SimpleDateFormat ft =new SimpleDateFormat ("MM/dd hh:mm");
+			msg=ft.format(date)+": "+msg;
+		}
+		if (win==true){textarea.append(msg+"\n");}
+		else{System.out.println(msg);}
+		
+	}
+	@SuppressWarnings("unused")
+	public void setupPanel(){
+	 	scrollPane.setBounds(0, 0, 434, 274);
+	 	getContentPane().add(scrollPane);
+	 	scrollPane.setViewportView(textarea);
+	 	textarea.setEditable(false);
+	 	getContentPane().setLayout(null);
+	 	bdebug.setBounds(10, 291, 89, 23);
+	 	getContentPane().add(bdebug);
+		String imagePath = "smokin.png";
+		InputStream imgStream = DebugWindow.class.getResourceAsStream(imagePath);
+		try{BufferedImage myImg = ImageIO.read(imgStream);}catch (Exception e){}
+		setTitle("Gossip Link");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		bdebug.addActionListener(this);
+	 	setIconImage(Toolkit.getDefaultToolkit().getImage(DebugWindow.class.getResource("/net/bearfather/goslink2/smokin.png")));
+		if (GosLink2.debug){this.setSize(453,370);}
+		else{this.setSize(448,311);}
+		this.setVisible(true);
+		
+	}
+	public void debugmode(boolean swch){
+		if (swch){
+		 	scrollPane.setBounds(0, 0, 834, 674);
+		 	bdebug.setBounds(10, 691, 89, 23);
+			this.setSize(853,870);
+			dbm=true;
+		}else{
+		 	scrollPane.setBounds(0, 0, 434, 274);
+		 	bdebug.setBounds(10, 291, 89, 23);
+			this.setSize(453,370);
+			dbm=false;
+		}
+	}
+	public void addmsg(String msg){
+		if (GosLink2.debugmsg.size()>5){
+			GosLink2.debugmsg.remove(0);
+			GosLink2.debugmsg.add(msg);
+		}else{
+			GosLink2.debugmsg.add(msg);
+		}
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(bdebug)){
+			if(dbm){debugmode(false);}else{debugmode(true);}
+
+			//tfdebug.setText(GosLink2.debugmsg);
+			//JOptionPane.showMessageDialog(frame,GosLink2.debugmsg, "last 5",JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
 }
