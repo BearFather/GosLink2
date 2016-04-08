@@ -23,12 +23,12 @@ public class WebTimer implements Runnable {
 				client.writeln(":!:ping:!:");
 				ping=true;
 				Thread.sleep(120000);
+				if (client.global){counter=0;}
 				if (ping){
 					GosLink2.dw.append("what is ping:"+ping);
 					counter=8;
 					run=false;
 				}
-				GosLink2.dw.append("counter:"+counter++);
 				if (counter==6){
 					client.writeln(":!:info:!:You have been idle for 5 min.  In 1 min this connection will be closed.");
 				}
@@ -44,7 +44,7 @@ public class WebTimer implements Runnable {
 			run=false;
 		}finally{
 			GosLink2.dw.append("Channel "+client.channel+" has been closed from timeout.");
-			sayit(name+" has left webchat.");
+			if (!name.equals("default")&&!name.equals("")){sayit(name+" has left webchat.");}
 			client.close();
 			}
 	}

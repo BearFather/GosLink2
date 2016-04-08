@@ -25,6 +25,7 @@ public static ArrayList<String> msgs=new ArrayList<String>();
 public static int spamtimer=5;
 public static boolean ansi=false;
 public static boolean timestamp=false;
+public static String key="none";
 static{
 			InputStream input = null;
 			try {
@@ -43,6 +44,7 @@ static{
 						if(prop.getProperty("debug")!=null){if(prop.getProperty("debug").toLowerCase().equals("true")){debug=true;}}
 						if(prop.getProperty("ansi")!=null){if(prop.getProperty("ansi").toLowerCase().equals("true")){ansi=true;}}
 						if(prop.getProperty("timestamp")!=null){if(prop.getProperty("timestamp").toLowerCase().equals("true")){timestamp=true;}}
+						if(prop.getProperty("key")!=null){key=prop.getProperty("key");}
 					} catch (IOException e) {e.printStackTrace();}
 				}
 			}

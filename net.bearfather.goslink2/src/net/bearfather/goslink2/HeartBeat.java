@@ -61,7 +61,7 @@ public class HeartBeat implements Runnable {
 			if (ct >5){ct=0;}
 		}else{
 			if (ol==0){GosLink2.dw.append("Server "+num+" is offline, waiting to restart.");}
-			if (ol == time){
+			if (ol >= time){
 				ol=0;
 				GosLink2.dw.append("Starting Server "+num+".");
 				GosLink2.startit(num);

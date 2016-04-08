@@ -17,7 +17,8 @@ public class WebSocket implements Runnable{
 	public WebSocket(){
 		GosLink2.dw.append("WebSocket started!");
 		Arrays.fill(channels,null);
-		
+		if(GosLink2.prop.getProperty("webport")!=null){port=GosLink2.Pi(GosLink2.prop.getProperty("webport"));}
+
 	}
 	@Override
 	public void run() {
@@ -38,7 +39,7 @@ public class WebSocket implements Runnable{
 			    t.start();
 				System.out.println("started connection");
 			} catch (IOException e) {
-				System.out.println("Accept failed: 3000");
+				GosLink2.dw.append("Accept failed: "+port);
 				}
 		}
 	}		

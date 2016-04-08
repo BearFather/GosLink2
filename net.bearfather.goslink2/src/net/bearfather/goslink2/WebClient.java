@@ -16,6 +16,8 @@ public class WebClient implements Runnable {
 	public boolean live=false;
 	public int channel=-1;
 	public WebTimer timer;
+	public boolean global=false;
+
 	WebClient(Socket client) {
 		this.client = client;
 	}
@@ -39,8 +41,12 @@ public class WebClient implements Runnable {
 		else{dataOut.println("no lines available");close();}
 		if (live){
 			// we are connected and talking.
-			dataOut.println(":!:connected:!:");
-			GosLink2.sayit(name+" has entered webchat.");
+			if (global){
+				GosLink2.dw.append("Connected to Global server!");
+			}else{
+				dataOut.println(":!:connected:!:");
+				GosLink2.sayit(name+" has entered webchat.");
+			}
 		}
 		while (live){
 			String msg="none";
@@ -51,16 +57,26 @@ public class WebClient implements Runnable {
 				if (rtn!=2){timer.reset();}
 				else if(rtn==3){close();}
 				if (rtn==0&&!msg.equals("\r\n")&&!msg.equals("\n")){
-					String smsg="";
-					if (smsg.length()>4){msg.substring(0,4);}
-					if (smsg.equals("gos ")){
-						msg=msg.substring(4);}
-					GosLink2.dw.append("Web:"+name+" gossips: "+msg);
-					GosLink2.sayit("W: "+name+": "+msg);
-					for (WebClient value:WebSocket.channels){
-						if (value!=null&&!value.name.equals(name)){value.send("W: "+name+": "+msg);}
+					if (global){
+						//"global¥:¥server¥:¥player¥:¥msg;
+						if (msg.startsWith("global¥:¥")){
+							String[] info=msg.split("¥:¥");
+							if (info.length>3){
+								String send=info[1]+"->"+info[2]+": "+info[3];
+								GosLink2.dw.append(send);
+								GosLink2.sayit(send);
+							}else{GosLink2.sayit(msg.substring(9));}
+						}
+					}else{
+						String smsg="";
+						if (msg.length()>4){smsg=msg.substring(0,4);}
+						if (smsg.equals("gos ")){msg=msg.substring(4);}
+						GosLink2.dw.append("Web:"+name+" gossips: "+msg);
+						GosLink2.sayit("W: "+name+": "+msg);
+						for (WebClient value:WebSocket.channels){
+							if (value!=null&&!value.name.equals(name)&&!value.global){value.send("W: "+name+": "+msg);}
+						}
 					}
-
 				}
 			} catch (InterruptedException | IOException e) {e.printStackTrace();live=false;}
 		}
@@ -72,12 +88,25 @@ public class WebClient implements Runnable {
 			try {
 				dataOut.println(":!:user:!:");
 				String tuser=readit();
+				
 				if (tuser!=null&&tuser.contains(":!:user:!:")){
 					tuser=tuser.replace(":!:user:!:", "").trim();
 					if (!tuser.equals(user)){
 						close();
 						return false;
 					}
+				}else if(tuser.trim().equals("¥server")){
+					// TODO we are talking to a global server.  
+					String key=readit("\n");
+					String chk=key.substring(5).trim();
+					if (chk.equals(GosLink2.key.substring(0,4))){
+						dataOut.println("¥key"+GosLink2.key);
+					}else{return false;}
+					key=readit("\n");
+					if (key.trim().startsWith("¥valid")){
+						global=true;
+						return true;
+					}else {return false;}
 				}else{
 					close();
 					return false;
@@ -132,7 +161,6 @@ public class WebClient implements Runnable {
                 }
             }
             ch = (char) dataIn.read();
-            
         }
        	return null;
             
@@ -150,7 +178,6 @@ public class WebClient implements Runnable {
                 }
             }
             ch = (char) dataIn.read();
-            
         }
        	return null;
             
@@ -193,7 +220,12 @@ public class WebClient implements Runnable {
 		
 	}
 	public void send(String msg){
+		if (global){
+			String[] line=msg.split(":");
+			if (line.length>2){msg="global¥:¥"+line[1]+"¥:¥"+line[2];}
+		}
 		dataOut.println(msg);
+		
 	}
 	public String getUser() {
 		return user;

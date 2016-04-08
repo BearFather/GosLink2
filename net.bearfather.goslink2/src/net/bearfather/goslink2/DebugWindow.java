@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
 import java.awt.Toolkit;
+import javax.swing.BoxLayout;
  
 public class DebugWindow extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
@@ -37,6 +38,7 @@ public class DebugWindow extends JFrame implements ActionListener{
 			Date date=new Date();
 			SimpleDateFormat ft =new SimpleDateFormat ("MM/dd hh:mm");
 			msg=ft.format(date)+": "+msg;
+			textarea.setCaretPosition(textarea.getDocument().getLength());
 		}
 		if (win==true){textarea.append(msg+"\n");}
 		else{System.out.println(msg);}
@@ -44,19 +46,17 @@ public class DebugWindow extends JFrame implements ActionListener{
 	}
 	@SuppressWarnings("unused")
 	public void setupPanel(){
-	 	scrollPane.setBounds(0, 0, 434, 274);
+	 	getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 	 	getContentPane().add(scrollPane);
 	 	scrollPane.setViewportView(textarea);
 	 	textarea.setEditable(false);
-	 	getContentPane().setLayout(null);
-	 	bdebug.setBounds(10, 291, 89, 23);
-	 	getContentPane().add(bdebug);
+	 	if(GosLink2.debug){scrollPane.setColumnHeaderView(bdebug);}
+	 	bdebug.addActionListener(this);
 		String imagePath = "smokin.png";
 		InputStream imgStream = DebugWindow.class.getResourceAsStream(imagePath);
 		try{BufferedImage myImg = ImageIO.read(imgStream);}catch (Exception e){}
 		setTitle("Gossip Link");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		bdebug.addActionListener(this);
 	 	setIconImage(Toolkit.getDefaultToolkit().getImage(DebugWindow.class.getResource("/net/bearfather/goslink2/smokin.png")));
 		if (GosLink2.debug){this.setSize(453,370);}
 		else{this.setSize(448,311);}
