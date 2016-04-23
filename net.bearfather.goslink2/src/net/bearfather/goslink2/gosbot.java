@@ -7,9 +7,11 @@ import java.util.ArrayList;
 
 public class gosbot {
 	private TelnetService TN;
-	
 	public ArrayList<String> enters =new ArrayList<String>();
 	
+	public gosbot(){
+		GosLink2.dw.append("GosBot Started.");
+	}
 	public void tele(String plr,int num) throws InterruptedException, IOException{
 		TN=GosLink2.TNH.get(num);
 		String msg=TN.readUntil("\n");
@@ -147,6 +149,7 @@ public class gosbot {
 		String blah=num+",/"+plr+" Hello "+plr+".  My name is "+gname+".  I am a GosLink Bot.  Please Telepath me @help for commands.";
 		if (found==1){enters.add(blah);}
 	}
+
 	public static void enterchk(){
 		for (String value:GosLink2.gb.enters){
 			GosLink2.dw.append(value);

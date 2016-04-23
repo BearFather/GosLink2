@@ -122,7 +122,7 @@ public class TelnetService {
                 			player=broken[i-1];
                 		}
                 	}
-                    GosLink2.gb.tele(player.trim().toLowerCase(),mynum);
+                    if (GosLink2.gosbot){GosLink2.gb.tele(player.trim().toLowerCase(),mynum);}
                 }
             }
             ch = (char) dataIn.read();
@@ -183,7 +183,7 @@ public class TelnetService {
             			player=broken[i-1];
             		}
             	}
-                GosLink2.gb.enter(player.trim(),mynum);
+                if (GosLink2.gosbot){GosLink2.gb.enter(player.trim(),mynum);}
      			oPlayers=ICheaker.whoCheck(this);
      			whoCheck=false;
      		}

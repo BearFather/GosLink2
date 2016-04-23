@@ -87,10 +87,8 @@ public class DebugWindow extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(bdebug)){
-			if(dbm){debugmode(false);}else{debugmode(true);}
-
-			//tfdebug.setText(GosLink2.debugmsg);
-			//JOptionPane.showMessageDialog(frame,GosLink2.debugmsg, "last 5",JOptionPane.INFORMATION_MESSAGE);
+			new SettingsFrame();
+			//if(dbm){debugmode(false);}else{debugmode(true);}
 		}
 	}
 }

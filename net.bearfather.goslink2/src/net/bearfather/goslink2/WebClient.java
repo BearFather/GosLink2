@@ -54,8 +54,8 @@ public class WebClient implements Runnable {
 				int rtn=0;
 				msg=readit();
 				rtn=WebSocket.checkCmd(msg,WebSocket.channels[channel]);
-				if (rtn!=2){timer.reset();}
-				else if(rtn==3){close();}
+				if (rtn==3){System.out.println("bsda");close();}
+				else if (rtn!=2){timer.reset();}
 				if (rtn==0&&!msg.equals("\r\n")&&!msg.equals("\n")){
 					if (global){
 						//"global¥:¥server¥:¥player¥:¥msg;
@@ -78,7 +78,7 @@ public class WebClient implements Runnable {
 						}
 					}
 				}
-			} catch (InterruptedException | IOException e) {e.printStackTrace();live=false;}
+			} catch (InterruptedException | IOException e) {close();e.printStackTrace();live=false;}
 		}
 
 	}
@@ -88,41 +88,31 @@ public class WebClient implements Runnable {
 			try {
 				dataOut.println(":!:user:!:");
 				String tuser=readit();
-				
 				if (tuser!=null&&tuser.contains(":!:user:!:")){
 					tuser=tuser.replace(":!:user:!:", "").trim();
 					if (!tuser.equals(user)){
 						close();
 						return false;
 					}
-				}else if(tuser.trim().equals("¥server")){
+				}else if(tuser!=null&&tuser.trim().equals(":!:server:!:")){
 					// TODO we are talking to a global server.  
 					String key=readit("\n");
-					String chk=key.substring(5).trim();
+					String chk=key.trim().substring(6);
 					if (chk.equals(GosLink2.key.substring(0,4))){
-						dataOut.println("¥key"+GosLink2.key);
-					}else{return false;}
+						dataOut.println(":!:key"+GosLink2.key);
+					}else{close();return false;}
 					key=readit("\n");
-					if (key.trim().startsWith("¥valid")){
+					if (key.trim().startsWith(":!:valid")){
 						global=true;
 						return true;
-					}else {return false;}
-				}else{
-					close();
-					return false;
-				}
+					}else {close();return false;}
+				}else{close();return false;}
 				dataOut.println(":!:pass:!:");
 				String tpass=readit();
 				if (tpass.contains(":!:pass:!:")){
 					tpass=tpass.replace(":!:pass:!:", "").trim();
-					if (!tpass.equals(pass)){
-						close();
-						return false;
-					}
-				}else{
-					close();
-					return false;
-				}
+					if (!tpass.equals(pass)){close();return false;}
+				}else{close();return false;}
 				dataOut.println(":!:name:!:");
 				String tname=readit().trim();
 				if (tname!=null&&!tname.equals("")){
@@ -180,7 +170,7 @@ public class WebClient implements Runnable {
             ch = (char) dataIn.read();
         }
        	return null;
-            
+             	
     }
 	public String readit() throws InterruptedException, IOException {
 		String pattern="\n";
@@ -214,9 +204,7 @@ public class WebClient implements Runnable {
 			client.close();
 		} catch (IOException e) {GosLink2.dw.append("we blew a fuse!");
 }
-		finally{
-			if (channel>-1){WebSocket.channels[channel]=null;}
-		}
+		finally{if (channel>-1){WebSocket.channels[channel]=null;}}
 		
 	}
 	public void send(String msg){
