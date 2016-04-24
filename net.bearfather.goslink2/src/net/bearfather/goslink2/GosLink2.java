@@ -34,7 +34,8 @@ static{
 				prop.load(input);
 			} catch (IOException ex) {
 				JFrame frame = null;
-				JOptionPane.showMessageDialog(frame, "Can't find config.properties!","No Config File",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Can't find config.properties!\n Launching Settings...","No Config File",JOptionPane.ERROR_MESSAGE);
+				new SettingsFrame(false);
 				System.exit(0);
 			} finally {
 				if (input != null) {
@@ -96,6 +97,7 @@ static{
     public static ArrayList<String> debugmsg=new ArrayList<String>();
 
     public static void main(String[] args) {
+    	GosLink2.dw.append("Double Click the window for settings.");
     	if (props("webchat")!=null&&props("webchat").equals("true")){
     		wst=new Thread(new WebSocket());
     		wst.start();
@@ -105,14 +107,14 @@ static{
     	TNH.put(1, TC1);
     	server1.start();
 		SH.put(1,server1);
-    	if (!props("server2").equals("none")){
+    	if (!props("server2").equals("none")&&!props("server2").equals("")){
         	TC2 = new TelnetService(props("server2"), 23);
         	server2 = new Thread (new GosLink2(2));
         	TNH.put(2, TC2);
     		server2.start();
     		SH.put(2,server2);
     	}
-    	if (!props("server3").equals("none")){
+    	if (!props("server3").equals("none")&&!props("server3").equals("")){
     		TC3 = new TelnetService(props("server3"), 23);
     		server3 = new Thread (new GosLink2(3));
     		TNH.put(3, TC3);
@@ -139,7 +141,7 @@ static{
 					dw.append("Server "+tcn+" offline.");
 					TNH.get(tcn).loggedin=0;
 					SH.get(tcn).interrupt();
-				}catch (IOException | InterruptedException e) {e.printStackTrace();System.out.println("thats me");}
+				}catch (IOException | InterruptedException e) {e.printStackTrace();dw.append("Server"+tcn+": Bad Server Address");SH.get(tcn).interrupt();}
 			}
 	SH.remove(tcn);
 	}
@@ -245,6 +247,7 @@ static{
     		}
     	}
     }
+
     public int getTcn() {
 		return tcn;
 	}

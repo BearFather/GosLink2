@@ -3,6 +3,8 @@ package net.bearfather.goslink2;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -15,9 +17,10 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
 import java.awt.Toolkit;
+
 import javax.swing.BoxLayout;
  
-public class DebugWindow extends JFrame implements ActionListener{
+public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 	private static final long serialVersionUID = 1L;
 	JTextArea textarea = new JTextArea();
 	JFrame frame=new JFrame();
@@ -51,6 +54,7 @@ public class DebugWindow extends JFrame implements ActionListener{
 	 	scrollPane.setViewportView(textarea);
 	 	textarea.setEditable(false);
 	 	if(GosLink2.debug){scrollPane.setColumnHeaderView(bdebug);}
+	 	textarea.addMouseListener(new ClickListener());
 	 	bdebug.addActionListener(this);
 		String imagePath = "smokin.png";
 		InputStream imgStream = DebugWindow.class.getResourceAsStream(imagePath);
@@ -87,8 +91,28 @@ public class DebugWindow extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(bdebug)){
-			new SettingsFrame();
+			new SettingsFrame(true);
 			//if(dbm){debugmode(false);}else{debugmode(true);}
 		}
+	}
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		
 	}
 }
