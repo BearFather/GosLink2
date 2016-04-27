@@ -68,7 +68,7 @@ static{
 						if (fmsgs.getProperty("tmsg4") != null&&!fmsgs.getProperty("tmsg4").isEmpty()){msgs.add(fmsgs.getProperty("tmsg4"));}
 						if (fmsgs.getProperty("tmsg5") != null&&!fmsgs.getProperty("tmsg5").isEmpty()){msgs.add(fmsgs.getProperty("tmsg5"));}
 						if (fmsgs.getProperty("tmsg6") != null&&!fmsgs.getProperty("tmsg6").isEmpty()){msgs.add(fmsgs.getProperty("tmsg6"));}
-						if (fmsgs.getProperty("timer") != null&&!fmsgs.getProperty("timer").isEmpty()){spamtimer=Integer.parseInt(fmsgs.getProperty("timer"));}
+						if (fmsgs.getProperty("timer") != null&&!fmsgs.getProperty("timer").isEmpty()){spamtimer=Pi(fmsgs.getProperty("timer"));}
 					} catch (IOException e) {}
 				}
 			}

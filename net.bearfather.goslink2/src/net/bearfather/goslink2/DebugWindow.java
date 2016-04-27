@@ -31,10 +31,7 @@ public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 	
 	 public DebugWindow(){
 		 setupPanel();
-	 	
 		 win=Boolean.valueOf(GosLink2.props("window"));
-		 if (win==true){
-		 }
 	   }
 	public void append(String msg) {
 		if (GosLink2.timestamp){
@@ -65,7 +62,6 @@ public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 		if (GosLink2.debug){this.setSize(453,370);}
 		else{this.setSize(448,311);}
 		this.setVisible(true);
-		
 	}
 	public void debugmode(boolean swch){
 		if (swch){
@@ -91,28 +87,17 @@ public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(bdebug)){
-			new SettingsFrame(true);
-			//if(dbm){debugmode(false);}else{debugmode(true);}
+			if(dbm){debugmode(false);}else{debugmode(true);}
 		}
 	}
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		
-	}
+	public void mouseClicked(MouseEvent arg0) {}
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		
-	}
+	public void mouseEntered(MouseEvent arg0) {}
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		
-	}
+	public void mouseExited(MouseEvent arg0) {}
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		
-	}
+	public void mousePressed(MouseEvent arg0) {}
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		
-	}
+	public void mouseReleased(MouseEvent arg0) {}
 }

@@ -30,7 +30,8 @@ import java.io.OutputStream;
 
 public class SettingsFrame extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	JDialog dialog=new JDialog(GosLink2.dw,true);
+	JDialog dialog=new JDialog(GosLink2.dw,true);//for gui
+	//JDialog dialog=new JDialog(); //for non gui
 	JMenuItem mmain = new JMenuItem("General");
 	JMenuItem mall = new JMenuItem("All");
 	JMenuItem mserver1 = new JMenuItem("Server1");
@@ -333,6 +334,7 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		pall.add(lblBbsUserPrompt);
 		
 		tpuser = new JTextField();
+		tpuser.setText("Otherwise type \\\"\u001B[36mnew\u001B[32m\\\":");
 		tpuser.setBounds(135, 11, 304, 20);
 		pall.add(tpuser);
 		tpuser.setColumns(10);
@@ -343,21 +345,25 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		pall.add(lblBbsPwPromp);
 		
 		tppass = new JTextField();
+		tppass.setText("Enter your password:");
 		tppass.setBounds(135, 36, 304, 20);
 		pall.add(tppass);
 		tppass.setColumns(10);
 		
 		tpmenu = new JTextField();
+		tpmenu.setText("help, or,X to exit");
 		tpmenu.setBounds(135, 61, 304, 20);
 		pall.add(tpmenu);
 		tpmenu.setColumns(10);
 		
 		tpmud = new JTextField();
+		tpmud.setText("[MAJORMUD]:");
 		tpmud.setBounds(135, 86, 304, 20);
 		pall.add(tpmud);
 		tpmud.setColumns(10);
 		
 		tcleanup = new JTextField();
+		tcleanup.setText("Sorry to interrupt here, but the server will be shutting");
 		tcleanup.setBounds(135, 111, 304, 20);
 		pall.add(tcleanup);
 		tcleanup.setColumns(10);
@@ -383,6 +389,7 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		pall.add(lblCleanupTime);
 		
 		ttime = new JTextField();
+		ttime.setText("1");
 		ttime.setBounds(135, 136, 28, 20);
 		pall.add(ttime);
 		ttime.setColumns(10);
