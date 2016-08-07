@@ -79,6 +79,22 @@ public class WebSocket implements Runnable{
 			GosLink2.dw.append("hanging up");
 			return 3;
 		}
+		else if (line.trim().equals(":!:last50:!:")){
+			String snd="{";
+			for (String v:GosLink2.log){
+				if (v!=null){snd=snd+"}::{"+v;}
+			}
+			if (snd.length()>3){snd=snd.substring(4)+"}";}
+			else {snd=snd+"}";}
+			w.write(snd+"\n");
+			return 1;
+			/*  This is to read what has been sent			
+				System.out.println(snd);
+				snd=snd.substring(1,snd.length()-1);
+				String[] b=snd.split("\\}::\\{");
+				for (String v:b){System.out.println(v);}
+			 */
+		}
 
 		return rtn;
 	}

@@ -31,7 +31,7 @@ public class gosbot {
 			}
 			else if (chk.equals("@help")){
 				TN.write("/"+plr+" Hello "+plr+" Commands are:");
-				cmd="/"+plr+" @abils,@good,@neutral,@evil,@retrain, and @home room# map#";
+				cmd="/"+plr+" @abils,@good,@neutral,@evil,@retrain,@where, and @home room# map#";
 			}
 			else if (chk.equals("@neutral")){
 				if (!denyall&&!GosLink2.deny.contains(plr)){
@@ -68,28 +68,10 @@ public class gosbot {
 				cmd="/"+plr+" "+rtn;
 			}
 			else if(chk.equals("@home")){
-				String line= "blank";
-				String line2 = "blank";
-				int alive=0;
 				if (broken.length < 3) {cmd="/"+plr+" not enough info";}
 				else{
 					TN.write("sys st room "+broken[1]+" "+broken[2]);
-					rtn=TN.readit("Monsters:","Room error");
-					if (rtn.equals("Room error")){cmd="/"+plr+" Room error!";}
-					else{
-						String broken2[]=rtn.split("\n");
-						for (int i=0;i<broken2.length;i++){
-							String mmsg=broken2[i];
-							if (mmsg.contains("Specific Monster:")){line=mmsg;}
-							else if (mmsg.contains("Specific Monster is Alive")){
-								line2=mmsg;
-								alive=1;
-							}
-						}
-						if (alive==1){cmd="/"+plr+" "+line2;}
-						else if (!line.equals("blank")){cmd="/"+plr+" "+line;}
-						else{cmd="/"+plr+" You have an invalid room.";}
-					}
+					cmd="/"+plr+" "+MobCheck(broken[1],broken[2]);				
 				}
 			}
 			else if(chk.startsWith("@score")){
@@ -101,6 +83,18 @@ public class gosbot {
 				ICheaker.TN=TN;
 				ICheaker ic=new ICheaker();
 				ic.run();
+			}
+			else if(chk.startsWith("@where")){
+				String rm=RoomCheck(plr);
+				if (!rm.equals("error")&&rm.contains("/")){
+					cmd="/"+plr+" Your current room: "+rm;
+					String[] b=rm.split("/");
+					String mob=MobCheck(b[0],b[1]);
+					if (!mob.equals("You have an invalid room.")&&!mob.equals("Room error!")){
+						TN.write(cmd);
+						cmd="/"+plr+" "+mob;
+					}
+				}else{cmd="/"+plr+" There was an error: "+rm;}
 			}
 			else{cmd="/"+plr+" Invalid command:"+msg;}
 			if (GosLink2.TC1!=null&&GosLink2.TC1.ghost ==1 || GosLink2.TC2!=null&&GosLink2.TC2.ghost == 1 || GosLink2.TC3!=null&&GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
@@ -157,5 +151,57 @@ public class gosbot {
 			GosLink2.TNH.get(num).write(value.substring(2));
 		}
 		GosLink2.gb.enters.clear();
+	}
+	public String RoomCheck(String user) throws InterruptedException, IOException{
+		String rtn="error";
+		TN.write("sys list users");
+		String line=TN.readit("There are", "skjafhdkhfaldsfh");
+		String[] b=line.split("\n");
+		boolean start=false;
+		for (String value:b){
+			if (value.trim().startsWith("=-=-=-")){start=true;}
+			if (start){
+				if (!value.trim().startsWith(">sys list")&&!value.trim().startsWith("Userid")&&!value.trim().startsWith("There are")&&!value.trim().startsWith("=-=-=-")){
+					value=value.replace("", "").trim();
+					while (value.contains("  ")){
+						value=value.replaceAll("  ", " ");
+					}
+					String[] v=value.split(" ");
+					if (v.length>2&&!v[1].equals(GosLink2.props("muser2"))){//TODO Fix hard coding!
+						String name=v[1].trim().toLowerCase();
+						if (name.equals(user.trim())){
+							return v[4];
+						}
+						System.out.println(v[4]);
+					}
+				}
+			}
+		}
+		return rtn;		
+	}
+	public String MobCheck(String rm,String map) throws InterruptedException, IOException{
+		String rtn="";
+		String line= "blank"; //mob details/time
+		String line2 = "blank"; //mob show if mob is alive
+		int alive=0;
+		TN.write("sys st room "+rm+" "+map);
+		rtn=TN.readit("Monsters:","Room error");
+		if (rtn.equals("Room error")){rtn="Room error!";}
+		else{
+			String broken2[]=rtn.split("\n");
+			for (int i=0;i<broken2.length;i++){
+				String mmsg=broken2[i];
+				if (mmsg.contains("Specific Monster:")){line=mmsg;}
+				else if (mmsg.contains("Specific Monster is Alive")){
+					line2=mmsg;
+					alive=1;
+				}
+			}
+			if (alive==1){rtn=line2;}
+			else if (!line.equals("blank")){rtn=line;}
+			else{rtn="You have an invalid room.";}
+		}
+		return rtn;
+	
 	}
 }

@@ -25,13 +25,14 @@ public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 	JTextArea textarea = new JTextArea();
 	JFrame frame=new JFrame();
  	JButton bdebug = new JButton("debug");
-	private boolean win;
+	private boolean win=true;
 	public boolean dbm=false;
 	private final JScrollPane scrollPane = new JScrollPane();
 	
 	 public DebugWindow(){
-		 setupPanel();
 		 win=Boolean.valueOf(GosLink2.props("window"));
+		 setupPanel();
+		 
 	   }
 	public void append(String msg) {
 		if (GosLink2.timestamp){
@@ -61,7 +62,7 @@ public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 	 	setIconImage(Toolkit.getDefaultToolkit().getImage(DebugWindow.class.getResource("/net/bearfather/goslink2/smokin.png")));
 		if (GosLink2.debug){this.setSize(453,370);}
 		else{this.setSize(448,311);}
-		this.setVisible(true);
+		if(win){this.setVisible(true);}
 	}
 	public void debugmode(boolean swch){
 		if (swch){

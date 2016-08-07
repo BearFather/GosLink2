@@ -86,8 +86,10 @@ public class WebClient implements Runnable {
 		boolean rtn=false;
 		while (live){
 			try {
+				GosLink2.dw.append("start");
 				dataOut.println(":!:user:!:");
 				String tuser=readit();
+				GosLink2.dw.append(tuser);
 				if (tuser!=null&&tuser.contains(":!:user:!:")){
 					tuser=tuser.replace(":!:user:!:", "").trim();
 					if (!tuser.equals(user)){
@@ -95,7 +97,7 @@ public class WebClient implements Runnable {
 						return false;
 					}
 				}else if(tuser!=null&&tuser.trim().equals(":!:server:!:")){
-					// TODO we are talking to a global server.  
+					//we are talking to a global server.  
 					String key=readit("\n");
 					String chk=key.trim().substring(6);
 					if (chk.equals(GosLink2.key.substring(0,4))){

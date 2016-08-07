@@ -16,63 +16,63 @@ import java.util.Properties;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-public class GosLink2 implements Runnable{
-public static Properties prop = new Properties();
-public static int time;
-public static boolean debug=false;
-public static String entrymsg="GosLink enabled.";
-public static ArrayList<String> msgs=new ArrayList<String>();
-public static int spamtimer=5;
-public static boolean ansi=false;
-public static boolean timestamp=false;
-public static boolean gosbot=true;
-public static String key="none";
-static{
-			InputStream input = null;
-			try {
-				input = new FileInputStream("config.properties");
-				prop.load(input);
-			} catch (IOException ex) {
-				JFrame frame = null;
-				JOptionPane.showMessageDialog(frame, "Can't find config.properties!\n Launching Settings...","No Config File",JOptionPane.ERROR_MESSAGE);
-				new SettingsFrame(false);
-				System.exit(0);
-			} finally {
-				if (input != null) {
-					try {
-						input.close();
-						time=Integer.parseInt(prop.getProperty("time"));
-						time=time*60*1000;
-						if(prop.getProperty("debug")!=null){if(prop.getProperty("debug").toLowerCase().equals("true")){debug=true;}}
-						if(prop.getProperty("ansi")!=null){if(prop.getProperty("ansi").toLowerCase().equals("true")){ansi=true;}}
-						if(prop.getProperty("timestamp")!=null){if(prop.getProperty("timestamp").toLowerCase().equals("true")){timestamp=true;}}
-						if(prop.getProperty("key")!=null){key=prop.getProperty("key");}
-						if(prop.getProperty("gosbot")!=null){if(prop.getProperty("gosbot").toLowerCase().equals("false")){gosbot=false;}}
-					} catch (IOException e) {e.printStackTrace();}
+	public class GosLink2 implements Runnable{
+	public static Properties prop = new Properties();
+	public static int time;
+	public static boolean debug=false;
+	public static String entrymsg="GosLink enabled.";
+	public static ArrayList<String> msgs=new ArrayList<String>();
+	public static int spamtimer=5;
+	public static boolean ansi=false;
+	public static boolean timestamp=false;
+	public static boolean gosbot=true;
+	public static String key="none";
+	static{
+				InputStream input = null;
+				try {
+					input = new FileInputStream("config.properties");
+					prop.load(input);
+				} catch (IOException ex) {
+					JFrame frame = null;
+					JOptionPane.showMessageDialog(frame, "Can't find config.properties!\n Launching Settings...","No Config File",JOptionPane.ERROR_MESSAGE);
+					new SettingsFrame(false);
+					System.exit(0);
+				} finally {
+					if (input != null) {
+						try {
+							input.close();
+							time=Integer.parseInt(prop.getProperty("time"));
+							time=time*60*1000;
+							if(prop.getProperty("debug")!=null){if(prop.getProperty("debug").toLowerCase().equals("true")){debug=true;}}
+							if(prop.getProperty("ansi")!=null){if(prop.getProperty("ansi").toLowerCase().equals("true")){ansi=true;}}
+							if(prop.getProperty("timestamp")!=null){if(prop.getProperty("timestamp").toLowerCase().equals("true")){timestamp=true;}}
+							if(prop.getProperty("key")!=null){key=prop.getProperty("key");}
+							if(prop.getProperty("gosbot")!=null){if(prop.getProperty("gosbot").toLowerCase().equals("false")){gosbot=false;}}
+						} catch (IOException e) {e.printStackTrace();}
+					}
 				}
-			}
-			InputStream m=null;
-			Properties fmsgs = new Properties();
-			try{
-				m=new FileInputStream("messages.cfg");
-				fmsgs.load(m);
-			}catch(IOException e){
-			}finally{
-				if (m!=null){
-					try {
-						m.close();
-						if (fmsgs.getProperty("entrymsg")!=null&&!fmsgs.getProperty("entrymsg").isEmpty()){entrymsg=fmsgs.getProperty("entrymsg");}
-						if (fmsgs.getProperty("tmsg1") != null&&!fmsgs.getProperty("tmsg1").isEmpty()){msgs.add(fmsgs.getProperty("tmsg1"));}
-						if (fmsgs.getProperty("tmsg2") != null&&!fmsgs.getProperty("tmsg2").isEmpty()){msgs.add(fmsgs.getProperty("tmsg2"));}
-						if (fmsgs.getProperty("tmsg3") != null&&!fmsgs.getProperty("tmsg3").isEmpty()){msgs.add(fmsgs.getProperty("tmsg3"));}
-						if (fmsgs.getProperty("tmsg4") != null&&!fmsgs.getProperty("tmsg4").isEmpty()){msgs.add(fmsgs.getProperty("tmsg4"));}
-						if (fmsgs.getProperty("tmsg5") != null&&!fmsgs.getProperty("tmsg5").isEmpty()){msgs.add(fmsgs.getProperty("tmsg5"));}
-						if (fmsgs.getProperty("tmsg6") != null&&!fmsgs.getProperty("tmsg6").isEmpty()){msgs.add(fmsgs.getProperty("tmsg6"));}
-						if (fmsgs.getProperty("timer") != null&&!fmsgs.getProperty("timer").isEmpty()){spamtimer=Pi(fmsgs.getProperty("timer"));}
-					} catch (IOException e) {}
+				InputStream m=null;
+				Properties fmsgs = new Properties();
+				try{
+					m=new FileInputStream("messages.cfg");
+					fmsgs.load(m);
+				}catch(IOException e){
+				}finally{
+					if (m!=null){
+						try {
+							m.close();
+							if (fmsgs.getProperty("entrymsg")!=null&&!fmsgs.getProperty("entrymsg").isEmpty()){entrymsg=fmsgs.getProperty("entrymsg");}
+							if (fmsgs.getProperty("tmsg1") != null&&!fmsgs.getProperty("tmsg1").isEmpty()){msgs.add(fmsgs.getProperty("tmsg1"));}
+							if (fmsgs.getProperty("tmsg2") != null&&!fmsgs.getProperty("tmsg2").isEmpty()){msgs.add(fmsgs.getProperty("tmsg2"));}
+							if (fmsgs.getProperty("tmsg3") != null&&!fmsgs.getProperty("tmsg3").isEmpty()){msgs.add(fmsgs.getProperty("tmsg3"));}
+							if (fmsgs.getProperty("tmsg4") != null&&!fmsgs.getProperty("tmsg4").isEmpty()){msgs.add(fmsgs.getProperty("tmsg4"));}
+							if (fmsgs.getProperty("tmsg5") != null&&!fmsgs.getProperty("tmsg5").isEmpty()){msgs.add(fmsgs.getProperty("tmsg5"));}
+							if (fmsgs.getProperty("tmsg6") != null&&!fmsgs.getProperty("tmsg6").isEmpty()){msgs.add(fmsgs.getProperty("tmsg6"));}
+							if (fmsgs.getProperty("timer") != null&&!fmsgs.getProperty("timer").isEmpty()){spamtimer=Pi(fmsgs.getProperty("timer"));}
+						} catch (IOException e) {}
+					}
 				}
-			}
-	 }
+		 }
 	public static DebugWindow dw=new DebugWindow();  //Non-Linux
 //	public static DebugConsole dw=new DebugConsole();//Linux
 //	public static outputWindow ow=new outputWindow();  //debug windows
@@ -95,6 +95,7 @@ static{
     private int tcn;
     static int look=1;
     public static ArrayList<String> debugmsg=new ArrayList<String>();
+    public static String[] log=new String[50];
 
     public static void main(String[] args) {
     	GosLink2.dw.append("Double Click the window for settings.");
@@ -192,6 +193,7 @@ static{
 			for (WebClient value:WebSocket.channels){
 				if (value!=null){value.send(sname+": "+tmsg[0].trim()+": "+tmsg[1].trim());}
 			}
+			log=shift(log,tmsg[0].trim()+" gossips: "+tmsg[1].trim());
 		}
 
 	}
@@ -199,6 +201,7 @@ static{
 		for(Entry<Integer, TelnetService> t:GosLink2.TNH.entrySet()){
 			if (GosLink2.TNH.get(t.getKey()).loggedin==1){GosLink2.TNH.get(t.getKey()).write("gos "+msg);}
 		}
+		log=shift(log,msg.trim());
 	}
 	public static void startit(int num){
 		if (!TNH.containsKey(num)){
@@ -260,6 +263,13 @@ static{
 	public static int Pi(String line){
 		int rtn=0;
 		try{rtn=Integer.parseInt(line);} catch (NumberFormatException nfe) {return 0;}
+		return rtn;
+	}
+	public static String[] shift(String[] msgs, String msg){
+		  int num = msgs.length - 1 ;
+		  String[] rtn=new String[num+1];
+		   System.arraycopy( msgs, 1, rtn, 0, num);
+		   rtn[num]=msg;
 		return rtn;
 	}
 }

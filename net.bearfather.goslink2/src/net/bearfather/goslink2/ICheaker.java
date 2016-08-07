@@ -28,7 +28,7 @@ public class ICheaker  implements Runnable{
 						value=value.replaceAll("  ", " ");
 					}
 					String[] v=value.split(" ");
-					if (v.length>2&&!v[1].equals(GosLink2.props("muser2"))){rtn=rtn+","+v[1];}
+					if (v.length>2&&!v[1].equals(GosLink2.props("muser2"))){rtn=rtn+","+v[1];}//TODO Why is msuser2 hard coded!
 				}
 			}
 		}
