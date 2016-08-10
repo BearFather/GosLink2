@@ -146,7 +146,6 @@ public class gosbot {
 
 	public static void enterchk(){
 		for (String value:GosLink2.gb.enters){
-			GosLink2.dw.append(value);
 			int num=Integer.parseInt(value.substring(0,1));
 			GosLink2.TNH.get(num).write(value.substring(2));
 		}

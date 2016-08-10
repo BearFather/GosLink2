@@ -224,7 +224,7 @@ import javax.swing.JOptionPane;
     	if (!fnames.exists()){fnames.createNewFile();}
     	BufferedReader rfile = new BufferedReader(new FileReader(fnames));
     	String nme=null;
-    	for (int i=0;i<6;i++){
+    	while(rfile.ready()){
     		nme=rfile.readLine();
     		if (nme!=null && !nme.isEmpty()){
     			names.add(nme);
@@ -243,7 +243,7 @@ import javax.swing.JOptionPane;
     	if (!dnames.exists()){dnames.createNewFile();}
     	BufferedReader rfile = new BufferedReader(new FileReader(dnames));
     	String nme=null;
-    	for (int i=0;i<6;i++){
+    	while (rfile.ready()){
     		nme=rfile.readLine();
     		if (nme!=null && !nme.isEmpty()){
     			deny.add(nme.toLowerCase().trim());
