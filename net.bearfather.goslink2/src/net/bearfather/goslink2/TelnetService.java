@@ -98,13 +98,12 @@ public class TelnetService {
         	if (whoCheck){oPlayers=ICheaker.whoCheck(this);whoCheck=false;}
             buffer.append(ch);
         	msg=buffer.toString();
-
         	String chk=msg.trim();
         	String rtn=msgchk(chk,msg);
         	if (rtn != null){return rtn;}
         	if (ch == lastChar) {
             	if (GosLink2.dw.dbm){GosLink2.dw.append(msg.trim());}
-         		if (buffer.toString().endsWith(pattern)) {
+            	if (buffer.toString().endsWith(pattern)) {
                 	broken=msg.split(" ");
                 	for (int i=0;i<broken.length;i++ ) {
                 		if (broken[i].equals("gossips:")){
@@ -145,6 +144,7 @@ public class TelnetService {
             buffer.append(ch);
             //System.out.print(ch);
             String msg=buffer.toString().trim();
+        	if (msg.endsWith("The gods have punished you appropriately.")){write("\n");}
             if (msg.contains(kill)){
      			return kill;
      		}
