@@ -108,6 +108,26 @@ public class WebClient implements Runnable {
 						global=true;
 						return true;
 					}else {close();return false;}
+				}else if(tuser!=null&&tuser.trim().equals(":!:ups:!:")){
+					dataOut.println(":command:");
+					String upsrtn=readit();
+					System.out.println(upsrtn);
+					if(upsrtn.trim().equals("onbatt")){
+						GosLink2.sayit("UPS is on battery!  Prepare for shutdown if we don't get power back!");
+						close();
+						return false;
+					}
+					if(upsrtn.trim().equals("online")){
+						GosLink2.sayit("UPS is on line Power! The world is a safe place once again.");
+						close();
+						return false;
+					}
+					if(upsrtn.trim().equals("timeronbatt")){
+						GosLink2.sayit("UPS is still on battery!  It's been 5 min on battery, we are shutting down!  Goodbye cruel world!!!");
+						close();
+						return false;
+					}else{close();return false;}
+					
 				}else{close();return false;}
 				dataOut.println(":!:pass:!:");
 				String tpass=readit();

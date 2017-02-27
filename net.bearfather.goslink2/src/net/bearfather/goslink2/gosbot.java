@@ -31,7 +31,7 @@ public class gosbot {
 			}
 			else if (chk.equals("@help")){
 				TN.write("/"+plr+" Hello "+plr+" Commands are:");
-				cmd="/"+plr+" @abils,@good,@neutral,@evil,@retrain,@where, and @home room# map#";
+				cmd="/"+plr+" . @abils,@good,@neutral,@evil,@retrain,@where, and @home room# map#";
 			}
 			else if (chk.equals("@neutral")){
 				if (!denyall&&!GosLink2.deny.contains(plr)){
@@ -96,7 +96,7 @@ public class gosbot {
 					}
 				}else{cmd="/"+plr+" There was an error: "+rm;}
 			}
-			else{cmd="/"+plr+" Invalid command:"+msg;}
+			else{cmd="/"+plr+" Invalid command:"+msg.trim()+" Try @help.";}
 			if (GosLink2.TC1!=null&&GosLink2.TC1.ghost ==1 || GosLink2.TC2!=null&&GosLink2.TC2.ghost == 1 || GosLink2.TC3!=null&&GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
 			TN.write(cmd);
 			}
@@ -166,7 +166,7 @@ public class gosbot {
 						value=value.replaceAll("  ", " ");
 					}
 					String[] v=value.split(" ");
-					if (v.length>2&&!v[1].equals(GosLink2.props("muser2"))){//TODO Fix hard coding!
+					if (v.length>2&&!v[1].equals(GosLink2.props("muser"+TN.mynum))){
 						String name=v[1].trim().toLowerCase();
 						if (name.equals(user.trim())){
 							return v[4];

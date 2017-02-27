@@ -73,8 +73,8 @@ import javax.swing.JOptionPane;
 					}
 				}
 		 }
-	public static DebugWindow dw=new DebugWindow();  //Non-Linux
-//	public static DebugConsole dw=new DebugConsole();//Linux
+//	public static DebugWindow dw=new DebugWindow();  //Non-Linux
+	public static DebugConsole dw=new DebugConsole();//Linux
 //	public static outputWindow ow=new outputWindow();  //debug windows
 //	public static outputWindow ow2=new outputWindow();  //debug windows
 	public static gosbot gb=new gosbot();
@@ -187,7 +187,7 @@ import javax.swing.JOptionPane;
 		if (!player.equals(u1)&&!player.equals(u2)&&!player.equals(u3)){
 			for(Entry<Integer, TelnetService> t:TNH.entrySet()){
 				if (tc!=t.getValue().mynum){
-					TNH.get(t.getKey()).write("gos  "+sname.substring(0,1)+": "+tmsg[0].trim()+": "+tmsg[1].trim());
+					TNH.get(t.getKey()).write("auc  "+sname.substring(0,1)+": "+tmsg[0].trim()+": "+tmsg[1].trim());
 				}
 			}
 			for (WebClient value:WebSocket.channels){

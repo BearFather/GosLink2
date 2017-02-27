@@ -30,8 +30,8 @@ import java.io.OutputStream;
 
 public class SettingsFrame extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	JDialog dialog=new JDialog(GosLink2.dw,true);//for gui
-	//JDialog dialog=new JDialog(); //for non gui
+	//JDialog dialog=new JDialog(GosLink2.dw,true);//for gui
+	JDialog dialog=new JDialog(); //for non gui
 	JMenuItem mmain = new JMenuItem("General");
 	JMenuItem mall = new JMenuItem("All");
 	JMenuItem mserver1 = new JMenuItem("Server1");
