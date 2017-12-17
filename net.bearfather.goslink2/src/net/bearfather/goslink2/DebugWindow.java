@@ -36,20 +36,21 @@ public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 		 
 	   }
 	 public synchronized void append(final String smsg) {
-	        Runnable  runnable = new Runnable() {
-	            public void run(){
-	            	String msg=smsg;
-	        		if (GosLink2.timestamp){
-	        			Date date=new Date();
-	        			SimpleDateFormat ft =new SimpleDateFormat ("MM/dd hh:mm");
-	        			msg=ft.format(date)+": "+msg;
-	        			textarea.setCaretPosition(textarea.getDocument().getLength());
-	        		}
-	        		if (win==true){textarea.append(msg+"\n");}
-	        		else{System.out.println(msg);}
-	            }
-	        };
-	        SwingUtilities.invokeLater(runnable);
+	        
+		 Runnable  runnable = new Runnable() {
+			 public void run(){
+				 String msg=smsg;
+				 if (GosLink2.timestamp){
+					 Date date=new Date();
+					 SimpleDateFormat ft =new SimpleDateFormat ("MM/dd hh:mm");
+					 msg=ft.format(date)+": "+msg;
+					 textarea.setCaretPosition(textarea.getDocument().getLength());
+				 }
+				 if (win==true){textarea.append(msg+"\n");}
+				 else{System.out.println(msg);}
+			 }
+		 };
+		 SwingUtilities.invokeLater(runnable);
 
 	    }
 	public void append2(String msg) {

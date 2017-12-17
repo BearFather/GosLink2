@@ -85,6 +85,7 @@ public class TelnetService {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			loggedin=0;
 		}
 	}
 	public String readUntil(String pattern) throws InterruptedException, IOException {
@@ -110,7 +111,8 @@ public class TelnetService {
                 			player=broken[i-1];
                 		}
                 	}
-                    return player+"<4;2>0:"+buffer.toString();
+                	
+                    return player+"<4;2>0:"+buffer.toString().trim();
                     
                 }
          		
@@ -121,24 +123,18 @@ public class TelnetService {
                 			player=broken[i-1];
                 		}
                 	}
-                    if (GosLink2.gosbot){GosLink2.gb.tele(player.trim().toLowerCase(),mynum);}
+                    if (GosLink2.gosbot1){GosLink2.gb.tele(player.trim().toLowerCase(),mynum);}
                 }
             }
             ch = (char) dataIn.read();
-
-            /*
-            int chn=Character.getNumericValue(ch);
-            if (!ping){System.out.println("!"+chn);}
-            if (!ping && chn!=-1){ping=true;}
-*/
         }
        	return null;
-            
         }
 	public String readit(String pattern, String kill) throws InterruptedException, IOException {
 		cnt=0;
 		char lastChar = pattern.charAt(pattern.length() - 1);
         StringBuffer buffer = new StringBuffer();
+        
         char ch = (char) dataIn.read();
         while (runner==1) {
             buffer.append(ch);
@@ -183,7 +179,7 @@ public class TelnetService {
             			player=broken[i-1];
             		}
             	}
-                if (GosLink2.gosbot){GosLink2.gb.enter(player.trim(),mynum);}
+                if (GosLink2.gosbot1){GosLink2.gb.enter(player.trim(),mynum);}
      			oPlayers=ICheaker.whoCheck(this);
      			whoCheck=false;
      		}

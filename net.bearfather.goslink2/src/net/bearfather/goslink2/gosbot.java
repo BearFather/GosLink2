@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class gosbot {
 	private TelnetService TN;
 	public ArrayList<String> enters =new ArrayList<String>();
-	
 	public gosbot(){
 		GosLink2.dw.append("GosBot Started.");
 	}
@@ -31,7 +30,7 @@ public class gosbot {
 			}
 			else if (chk.equals("@help")){
 				TN.write("/"+plr+" Hello "+plr+" Commands are:");
-				cmd="/"+plr+" . @abils,@good,@neutral,@evil,@retrain,@where, and @home room# map#";
+				cmd="/"+plr+" . @abils,@good,@neutral,@evil,@retrain,@where, @repeat, and @home room# map#";
 			}
 			else if (chk.equals("@neutral")){
 				if (!denyall&&!GosLink2.deny.contains(plr)){
@@ -75,7 +74,7 @@ public class gosbot {
 				}
 			}
 			else if(chk.startsWith("@score")){
-				int max=10;
+				int max=9;
 				if (broken.length>1){
 					max=Integer.parseInt(broken[1])-1;
 				}
@@ -85,6 +84,7 @@ public class gosbot {
 				ic.run();
 			}
 			else if(chk.startsWith("@where")){
+//				cmd="/"+plr+" Disabled";
 				String rm=RoomCheck(plr);
 				if (!rm.equals("error")&&rm.contains("/")){
 					cmd="/"+plr+" Your current room: "+rm;
@@ -96,13 +96,19 @@ public class gosbot {
 					}
 				}else{cmd="/"+plr+" There was an error: "+rm;}
 			}
+			else if(chk.startsWith("@repeat")){
+					if (broken.length >1 && broken[1].startsWith("@")){
+						cmd="/"+plr+" "+broken[1];
+					}else{
+						cmd="/"+plr+" Invalid command, must be a valid mega command.";
+					}
+			}
 			else{cmd="/"+plr+" Invalid command:"+msg.trim()+" Try @help.";}
 			if (GosLink2.TC1!=null&&GosLink2.TC1.ghost ==1 || GosLink2.TC2!=null&&GosLink2.TC2.ghost == 1 || GosLink2.TC3!=null&&GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
 			TN.write(cmd);
 			}
 		//else{} //this would be a telepath without a @
 	}
-	
 	public void enter(String plr,int num) throws InterruptedException, FileNotFoundException, UnsupportedEncodingException{
 		String gname;
 		int found=0;
@@ -141,7 +147,7 @@ public class gosbot {
 		TN=GosLink2.TNH.get(num);
 		gname=GosLink2.props("muser"+num);
 		String blah=num+",/"+plr+" Hello "+plr+".  My name is "+gname+".  I am a GosLink Bot.  Please Telepath me @help for commands.";
-		if (found==1){enters.add(blah);}
+		if (found==99){enters.add(blah);}//TODO changes this back to 1
 	}
 
 	public static void enterchk(){
@@ -155,12 +161,14 @@ public class gosbot {
 		String rtn="error";
 		TN.write("sys list users");
 		String line=TN.readit("There are", "skjafhdkhfaldsfh");
+		//System.out.println(line+line.length());
 		String[] b=line.split("\n");
 		boolean start=false;
 		for (String value:b){
 			if (value.trim().startsWith("=-=-=-")){start=true;}
 			if (start){
 				if (!value.trim().startsWith(">sys list")&&!value.trim().startsWith("Userid")&&!value.trim().startsWith("There are")&&!value.trim().startsWith("=-=-=-")){
+					String svalue=value;
 					value=value.replace("", "").trim();
 					while (value.contains("  ")){
 						value=value.replaceAll("  ", " ");
@@ -169,9 +177,12 @@ public class gosbot {
 					if (v.length>2&&!v[1].equals(GosLink2.props("muser"+TN.mynum))){
 						String name=v[1].trim().toLowerCase();
 						if (name.equals(user.trim())){
-							return v[4];
+							String[] test=svalue.split("/");
+							String room=test[0].substring(test[0].length()-6).trim();
+							String map=test[1].substring(0, 2).trim();
+							return room+"/"+map;
 						}
-						System.out.println(v[4]);
+						//System.out.println(v[4]);
 					}
 				}
 			}
@@ -181,7 +192,7 @@ public class gosbot {
 	public String MobCheck(String rm,String map) throws InterruptedException, IOException{
 		String rtn="";
 		String line= "blank"; //mob details/time
-		String line2 = "blank"; //mob show if mob is alive
+		String line2 = "blank"; //show if mob is alive
 		int alive=0;
 		TN.write("sys st room "+rm+" "+map);
 		rtn=TN.readit("Monsters:","Room error");

@@ -29,7 +29,7 @@ public class HeartBeat implements Runnable {
 				for (int v:GosLink2.TNH.keySet()){
 					checkserver(v);
 				}
-				if (GosLink2.gosbot){gosbot.enterchk();}
+				if (GosLink2.gosbot1){gosbot.enterchk();}
 			} catch (Exception e) {e.printStackTrace();}
 		}
 	}

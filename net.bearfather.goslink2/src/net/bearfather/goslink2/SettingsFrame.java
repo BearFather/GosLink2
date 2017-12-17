@@ -30,7 +30,7 @@ import java.io.OutputStream;
 
 public class SettingsFrame extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	//JDialog dialog=new JDialog(GosLink2.dw,true);//for gui
+//	JDialog dialog=new JDialog(GosLink2.dw,true);//for gui
 	JDialog dialog=new JDialog(); //for non gui
 	JMenuItem mmain = new JMenuItem("General");
 	JMenuItem mall = new JMenuItem("All");
@@ -80,6 +80,7 @@ public class SettingsFrame extends JDialog implements ActionListener {
 	public static Properties prop = GosLink2.prop;
 	private String blanks="";
 	boolean loadprops;
+	private JTextField tbroadcast;
 	public SettingsFrame(boolean loadprops) {
 		this.loadprops=loadprops;
 		setupPanel();
@@ -132,6 +133,7 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		prop.setProperty("time", ttime.getText());
 		prop.setProperty("webuser", twebuser.getText());
 		prop.setProperty("webpass", twebpass.getText());
+		prop.setProperty("broadcast", tbroadcast.getText());
 		String chk="false";
 		if (cwindow.isSelected()){chk="true";}
 		prop.setProperty("window", chk);
@@ -190,6 +192,7 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		if (prop.getProperty("ansi")!=null&&prop.getProperty("ansi").toLowerCase().equals("true")){cansi.setSelected(true);}
 		if (prop.getProperty("timestamp")!=null&&prop.getProperty("timestamp").toLowerCase().equals("true")){ctimestamp.setSelected(true);}
 		if (prop.getProperty("debug")!=null&&prop.getProperty("debug").toLowerCase().equals("true")){cdebug.setSelected(true);}
+		if (prop.getProperty("broadcast")!=null){tbroadcast.setText(prop.getProperty("broadcast"));}else{tbroadcast.setText("gos");}
 
 	}
 	private boolean chkFields(){
@@ -265,6 +268,9 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		panel.add(pmain, "main");
 		pmain.setLayout(null);
 		
+		cdebug.setBounds(347, 7, 114, 23);
+		pmain.add(cdebug);
+		
 		cwindow.setBounds(22, 7, 114, 23);
 		pmain.add(cwindow);
 		
@@ -276,9 +282,6 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		cgosbot.setSelected(true);
 		cwebchat.setBounds(254, 7, 114, 23);
 		pmain.add(cwebchat);
-		
-		cdebug.setBounds(157, 134, 114, 23);
-		pmain.add(cdebug);
 		
 		ctimestamp.setBounds(22, 33, 114, 23);
 		pmain.add(ctimestamp);
@@ -298,7 +301,8 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		pmain.add(lblWebuser);
 		
 		JLabel lblWebPassword = new JLabel("Web P/W:");
-		lblWebPassword.setBounds(32, 91, 57, 14);
+		lblWebPassword.setHorizontalAlignment(SwingConstants.TRAILING);
+		lblWebPassword.setBounds(32, 97, 57, 14);
 		pmain.add(lblWebPassword);
 		
 		twebpass = new JTextField();
@@ -307,7 +311,8 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		twebpass.setColumns(10);
 		
 		JLabel lblGlobalKey = new JLabel("Global Key:");
-		lblGlobalKey.setBounds(225, 97, 67, 14);
+		lblGlobalKey.setHorizontalAlignment(SwingConstants.TRAILING);
+		lblGlobalKey.setBounds(215, 97, 67, 14);
 		pmain.add(lblGlobalKey);
 		
 		tkey = new JTextField();
@@ -324,6 +329,18 @@ public class SettingsFrame extends JDialog implements ActionListener {
 		twebport.setBounds(292, 63, 86, 20);
 		pmain.add(twebport);
 		twebport.setColumns(10);
+		
+		JLabel lblBroadcast = new JLabel("Broadcast:");
+		lblBroadcast.setToolTipText("What do you want to relay gossips on? IE:gossip, auction, broadcast");
+		lblBroadcast.setHorizontalAlignment(SwingConstants.TRAILING);
+		lblBroadcast.setBounds(22, 128, 67, 14);
+		pmain.add(lblBroadcast);
+		
+		tbroadcast = new JTextField();
+		tbroadcast.setToolTipText("What do you want to relay gossips on? IE:gossip, auction, broadcast");
+		tbroadcast.setBounds(99, 125, 86, 20);
+		pmain.add(tbroadcast);
+		tbroadcast.setColumns(10);
 		JPanel pall = new JPanel();
 		panel.add(pall, "all");
 		pall.setLayout(null);

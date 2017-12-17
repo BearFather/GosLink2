@@ -25,14 +25,16 @@ import javax.swing.JOptionPane;
 	public static int spamtimer=5;
 	public static boolean ansi=false;
 	public static boolean timestamp=false;
-	public static boolean gosbot=true;
+	public static boolean gosbot1=true;
 	public static String key="none";
+	public static String broadcast="gos";
 	static{
 				InputStream input = null;
 				try {
 					input = new FileInputStream("config.properties");
 					prop.load(input);
 				} catch (IOException ex) {
+					System.out.println("No config.properties. Please copy template or launch in a gui.");
 					JFrame frame = null;
 					JOptionPane.showMessageDialog(frame, "Can't find config.properties!\n Launching Settings...","No Config File",JOptionPane.ERROR_MESSAGE);
 					new SettingsFrame(false);
@@ -47,7 +49,8 @@ import javax.swing.JOptionPane;
 							if(prop.getProperty("ansi")!=null){if(prop.getProperty("ansi").toLowerCase().equals("true")){ansi=true;}}
 							if(prop.getProperty("timestamp")!=null){if(prop.getProperty("timestamp").toLowerCase().equals("true")){timestamp=true;}}
 							if(prop.getProperty("key")!=null){key=prop.getProperty("key");}
-							if(prop.getProperty("gosbot")!=null){if(prop.getProperty("gosbot").toLowerCase().equals("false")){gosbot=false;}}
+							if(prop.getProperty("gosbot")!=null){if(prop.getProperty("gosbot").toLowerCase().equals("false")){gosbot1=false;}}
+							if(prop.getProperty("broadcast")!=null){broadcast=prop.getProperty("broadcast");}
 						} catch (IOException e) {e.printStackTrace();}
 					}
 				}
@@ -73,10 +76,7 @@ import javax.swing.JOptionPane;
 					}
 				}
 		 }
-//	public static DebugWindow dw=new DebugWindow();  //Non-Linux
-	public static DebugConsole dw=new DebugConsole();//Linux
-//	public static outputWindow ow=new outputWindow();  //debug windows
-//	public static outputWindow ow2=new outputWindow();  //debug windows
+	public static DebugConsole dw=new DebugConsole();
 	public static gosbot gb=new gosbot();
 	static TelnetService TC1;
 	static TelnetService TC2;
@@ -142,7 +142,7 @@ import javax.swing.JOptionPane;
 					dw.append("Server "+tcn+" offline.");
 					TNH.get(tcn).loggedin=0;
 					SH.get(tcn).interrupt();
-				}catch (IOException | InterruptedException e) {e.printStackTrace();dw.append("Server"+tcn+": Bad Server Address");SH.get(tcn).interrupt();}
+				}catch (IOException | InterruptedException e) {e.printStackTrace();dw.append("Server"+tcn+": Bad Server Address");if (SH.containsKey(tcn)){SH.get(tcn).interrupt();}}
 			}
 	SH.remove(tcn);
 	}
@@ -167,6 +167,7 @@ import javax.swing.JOptionPane;
 				if (msg.equals("!OffLINE+02")){
 				}else if(msg.contains("users in the game.")){
 				}else{
+					TelnetService.player="";
 					sayit(num,msg);
 				}
 			}
@@ -175,29 +176,31 @@ import javax.swing.JOptionPane;
 		killme(num);
 		return "reload";
 	}
-	public static void sayit(int tc,String msg){
+	public static void sayit(int tc,String msg){ //this will send on chosen command auc/gos/br
 		String tmsg[]=msg.split("<4;2>0:");
-		String player = tmsg[0];
-		player=player.toLowerCase().trim();
-		String u1=props("muser1").toLowerCase();
-		String u2=props("muser2").toLowerCase();
-		String u3=props("muser3").toLowerCase();
-		String sname=props("server"+tc+"name");
-		if (TC1.ghost ==1 || TC2!=null&&TC2.ghost == 1 || TC3!=null&&TC3.ghost == 1){tmsg[1]=tmsg[1]+"\n";}
-		if (!player.equals(u1)&&!player.equals(u2)&&!player.equals(u3)){
-			for(Entry<Integer, TelnetService> t:TNH.entrySet()){
-				if (tc!=t.getValue().mynum){
-					TNH.get(t.getKey()).write("auc  "+sname.substring(0,1)+": "+tmsg[0].trim()+": "+tmsg[1].trim());
+		if (tmsg!=null&&tmsg.length>1){
+			String player = tmsg[0];
+			player=player.toLowerCase().trim();
+			String u1=props("muser1").toLowerCase();
+			String u2=props("muser2").toLowerCase();
+			String u3=props("muser3").toLowerCase();
+			String sname=props("server"+tc+"name");
+			if (TC1.ghost ==1 || TC2!=null&&TC2.ghost == 1 || TC3!=null&&TC3.ghost == 1){tmsg[1]=tmsg[1]+"\n";}
+			if (!player.equals(u1)&&!player.equals(u2)&&!player.equals(u3)){
+				for(Entry<Integer, TelnetService> t:TNH.entrySet()){
+					if (tc!=t.getValue().mynum&&tmsg!=null&&tmsg.length>1){
+						String temp=broadcast+"  "+sname.substring(0,1)+": "+tmsg[0].trim()+": "+tmsg[1].trim();
+						TNH.get(t.getKey()).write(temp);
+					}
 				}
+				for (WebClient value:WebSocket.channels){
+					if (value!=null){value.send(sname+": "+tmsg[0].trim()+": "+tmsg[1].trim());}
+				}
+				if (tmsg!=null&&tmsg.length>1){log=shift(log,tmsg[0].trim()+" gossips: "+tmsg[1].trim());}
 			}
-			for (WebClient value:WebSocket.channels){
-				if (value!=null){value.send(sname+": "+tmsg[0].trim()+": "+tmsg[1].trim());}
-			}
-			log=shift(log,tmsg[0].trim()+" gossips: "+tmsg[1].trim());
 		}
-
 	}
-	public static void sayit(String msg){
+	public static void sayit(String msg){// this will send to all channels on gos only
 		for(Entry<Integer, TelnetService> t:GosLink2.TNH.entrySet()){
 			if (GosLink2.TNH.get(t.getKey()).loggedin==1){GosLink2.TNH.get(t.getKey()).write("gos "+msg);}
 		}
