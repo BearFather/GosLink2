@@ -1,9 +1,14 @@
 package net.bearfather.goslink2;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class gosbot {
 	private TelnetService TN;
@@ -17,7 +22,13 @@ public class gosbot {
 		String cmd="";
 		String rtn;
 		String tmsg[]=msg.split("<4;2>0:");
-		msg = tmsg[1];
+		if (tmsg.length > 1) {
+			msg = tmsg[1];
+		}else if (tmsg.length>0) {
+			msg=tmsg[0];
+		}else {
+			msg="NULL";
+		}
 		String broken[]=msg.trim().split(" ");
 		String chk=broken[0].trim().toLowerCase();
 		boolean denyall=Boolean.parseBoolean(GosLink2.props("deny"));
@@ -30,7 +41,11 @@ public class gosbot {
 			}
 			else if (chk.equals("@help")){
 				TN.write("/"+plr+" Hello "+plr+" Commands are:");
-				cmd="/"+plr+" . @abils,@good,@neutral,@evil,@retrain,@where, @repeat, and @home room# map#";
+				TN.write("/"+plr+" . @abils,@good,@neutral,@evil,@retrain,@where, @repeat, @home room# map#, and @notify <message> (to send message to sysop)");
+				String s1=GosLink2.props("server1name");
+				String s2=GosLink2.props("server2name");
+				String s3=GosLink2.props("server3name");
+				cmd="/"+plr+" For goslink gossip: "+s1.substring(0,1)+"="+s1+" realm, "+s2.substring(0,1)+"="+s2+" realm, "+s3.substring(0,1)+"="+s3+" realm";
 			}
 			else if (chk.equals("@neutral")){
 				if (!denyall&&!GosLink2.deny.contains(plr)){
@@ -103,6 +118,36 @@ public class gosbot {
 						cmd="/"+plr+" Invalid command, must be a valid mega command.";
 					}
 			}
+			else if(chk.startsWith("@notify")) {
+				if (plr.equals(GosLink2.admin)) {
+					String admin=GosLink2.admin;	
+					ArrayList<String> msgs=GosLink2.filerdr("sysop.msg");
+					if (msgs.size()>0) {
+						for (String cmsg:msgs) {
+							String[] bkn=cmsg.split(":!:");
+							if (bkn.length>3) {
+								TN.write("/"+admin+" "+bkn[2]+" "+bkn[1]+" from "+bkn[0]+":");
+								TN.write("/"+admin+" -   "+bkn[3]);
+								Thread.sleep(300);
+							}
+							cmd="/"+admin+" -=-=- End of messages -=-=-";
+							File file =new File("sysop.msg");
+							file.delete();
+						}
+					}else {
+						cmd="/"+admin+" No messages!";
+					}
+				}else {
+					String nmsg=msg.substring(chk.length());
+					ArrayList<String> msgs = new ArrayList<String>();
+					DateFormat df = new SimpleDateFormat("HH:mm");
+					Date today = Calendar.getInstance().getTime(); 
+					String time = df.format(today);
+					nmsg=TN.myname+":!:"+plr+":!:"+time+":!:"+nmsg.trim();
+					msgs.add(nmsg);
+					GosLink2.filewrt("sysop.msg", msgs, true);
+				}
+			}
 			else{cmd="/"+plr+" Invalid command:"+msg.trim()+" Try @help.";}
 			if (GosLink2.TC1!=null&&GosLink2.TC1.ghost ==1 || GosLink2.TC2!=null&&GosLink2.TC2.ghost == 1 || GosLink2.TC3!=null&&GosLink2.TC3.ghost == 1){cmd=cmd+"\n";}
 			TN.write(cmd);
@@ -147,7 +192,7 @@ public class gosbot {
 		TN=GosLink2.TNH.get(num);
 		gname=GosLink2.props("muser"+num);
 		String blah=num+",/"+plr+" Hello "+plr+".  My name is "+gname+".  I am a GosLink Bot.  Please Telepath me @help for commands.";
-		if (found==99){enters.add(blah);}//TODO changes this back to 1
+		if (found==1){enters.add(blah);}//TODO changes this back to 1
 	}
 
 	public static void enterchk(){

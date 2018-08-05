@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 	public static boolean gosbot1=true;
 	public static String key="none";
 	public static String broadcast="gos";
+	public static String admin="sysop";
 	static{
 				InputStream input = null;
 				try {
@@ -51,6 +52,7 @@ import javax.swing.JOptionPane;
 							if(prop.getProperty("key")!=null){key=prop.getProperty("key");}
 							if(prop.getProperty("gosbot")!=null){if(prop.getProperty("gosbot").toLowerCase().equals("false")){gosbot1=false;}}
 							if(prop.getProperty("broadcast")!=null){broadcast=prop.getProperty("broadcast");}
+							if(prop.getProperty("admin")!=null){admin=prop.getProperty("admin").toLowerCase();}
 						} catch (IOException e) {e.printStackTrace();}
 					}
 				}
@@ -155,7 +157,7 @@ import javax.swing.JOptionPane;
 		if (rtn.equals("reload")){return rtn;}
 		TC.readit(" ","Room error");
 		dw.append("Server "+num+": ");
-		TC.write("gos "+entrymsg);
+		TC.write(broadcast+" "+entrymsg);
 		TC.readit("\n","Room error");
 		TC.write("\n");
 		String msg = null;
@@ -253,7 +255,37 @@ import javax.swing.JOptionPane;
     		}
     	}
     }
-
+    @SuppressWarnings("resource")
+ 	public static ArrayList<String> filerdr(String sfile) throws IOException{
+    	File file=new File(sfile);
+    	ArrayList<String> rtn=new ArrayList<String>();
+    	if (!file.exists()){file.createNewFile();}
+     	BufferedReader rfile = new BufferedReader(new FileReader(file));
+     	String nme=null;
+     	while(rfile.ready()){
+     		nme=rfile.readLine();
+     		if (nme!=null && !nme.isEmpty()){
+     			rtn.add(nme);
+     		}
+     	}
+     	rfile.close();
+     	return rtn;
+     }
+     public static void filewrt(String file,ArrayList<String> data,boolean add) throws IOException{
+		try {
+			if (add) {
+				ArrayList<String> ndata;
+				ndata = filerdr(file);
+				data.addAll(0,ndata);
+				
+			}
+		} catch (IOException e) {}
+    	PrintWriter wfile = new PrintWriter(file, "UTF-8");
+    	for (int i=0;i<data.size();i++){
+    		wfile.println(data.get(i));
+    	}
+    	wfile.close();
+     }
     public int getTcn() {
 		return tcn;
 	}

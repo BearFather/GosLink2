@@ -13,7 +13,7 @@ public class TelnetService {
 	private PrintStream dataOut;
 	public static String player;
 	public int loggedin=0;
-	public static int runner=1;
+	public int runner=1;
 	public int ghost =0;
 	public int mynum=0;
 	public String myname="";
@@ -32,6 +32,7 @@ public class TelnetService {
 	public void killme() throws IOException{
 		GosLink2.dw.append("Ghost detected.  Reloging.");
 		telnet.disconnect();
+		
 	}
 	private void startTelnetSession() throws SocketException, IOException {
 		telnet.connect(server, port);
@@ -42,6 +43,7 @@ public class TelnetService {
         startTelnetSession();
         String rtn="blah";
         GosLink2.dw.append("Logging into server "+tcb+".");
+		runner=1;
         if (tcb.equals("1")){
         	rtn=loginUser(GosLink2.props("user1"),GosLink2.props("game1"),GosLink2.props("pass1"));
         }
@@ -103,7 +105,7 @@ public class TelnetService {
         	String rtn=msgchk(chk,msg);
         	if (rtn != null){return rtn;}
         	if (ch == lastChar) {
-            	if (GosLink2.dw.dbm){GosLink2.dw.append(msg.trim());}
+            	if (GosLink2.debug){GosLink2.dw.append(msg.trim());}
             	if (buffer.toString().endsWith(pattern)) {
                 	broken=msg.split(" ");
                 	for (int i=0;i<broken.length;i++ ) {
@@ -158,7 +160,6 @@ public class TelnetService {
 
 	private String msgchk(String chk, String msg) throws InterruptedException, IOException{
         	String broken[];
-    		
         	if (chk.endsWith(ghosts)){
         		ghost=1;
         	}
@@ -185,6 +186,8 @@ public class TelnetService {
      		}
         	else if (chk.endsWith(hangup)){
             	GosLink2.dw.append("BBS shutdown detected!");
+            	write("=x");
+            	runner=0;
             	loggedin=0;
             	return "!OffLINE+02";
             }

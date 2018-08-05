@@ -89,11 +89,13 @@ public class DebugWindow extends JFrame implements ActionListener,MouseListener{
 		 	bdebug.setBounds(10, 691, 89, 23);
 			this.setSize(853,870);
 			dbm=true;
+			GosLink2.debug=true;
 		}else{
 		 	scrollPane.setBounds(0, 0, 434, 274);
 		 	bdebug.setBounds(10, 291, 89, 23);
 			this.setSize(453,370);
 			dbm=false;
+			GosLink2.debug=false;
 		}
 	}
 	public void addmsg(String msg){
