@@ -4,7 +4,13 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.SocketException;
 import org.apache.commons.net.telnet.TelnetClient;
-
+/*
+ * 		This Class was made to do a rewrite,
+ * 		I have haven't got far but maybe used
+ * 		in the future.
+ *							Bear 
+ *
+ */
 public class Connector implements Runnable {
 
 	public Connector() {
@@ -59,12 +65,12 @@ public class Connector implements Runnable {
 			readUntil(GosLink2.props("ppass"));
 			write(pass+"\r\n");
 			readUntil(GosLink2.props("pmenu"));
-/*			if (ghost == 1){
-				prewrite("=x\n");
+			if (ghost == 1){
+				write("=x\n");
 				ghost=0;
 				return "reload";
 			}
-*/			write(cmd);
+			write(cmd);
 			readUntil(GosLink2.props("pmud"));
 			write("e");
 			write("\n");
